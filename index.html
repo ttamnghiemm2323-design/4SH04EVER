@@ -128,12 +128,12 @@
     font-size:10px;
     letter-spacing:1px;
     color:var(--grey);
+    position:relative;
   }
   nav.mainnav a .ic{font-size:15px;color:var(--paper);}
   nav.mainnav a:hover{color:var(--lime);}
   nav.mainnav a:hover .ic{color:var(--lime);}
   nav.mainnav a.locked{cursor:pointer;}
-  nav.mainnav a.locked .ic{position:relative;}
   nav.mainnav a.locked::after{
     content:'hint: search a special date...';
     position:absolute;
@@ -692,7 +692,6 @@
     user-select:none;
     will-change:transform;
     transition:transform .05s linear;
-    filter:drop-shadow(0 0 4px rgba(198,255,61,.5));
   }
   .falling-item.good{filter:drop-shadow(0 0 6px rgba(198,255,61,.7));}
   .falling-item.bad{filter:drop-shadow(0 0 6px rgba(194,54,82,.8));}
@@ -771,6 +770,118 @@
   }
   .legend span b{color:var(--lime); font-weight:normal;}
   .legend span.bad b{color:var(--wine-bright);}
+
+  /* ============ GOOD BRO POPUP (8 điểm) ============ */
+  .goodbro-popup{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(.5) rotate(-8deg);
+    background:linear-gradient(180deg, var(--lime), color-mix(in srgb, var(--lime) 55%, black));
+    border:3px solid var(--black);
+    border-radius:10px;
+    padding:14px 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    box-shadow:6px 6px 0 rgba(0,0,0,.7), 0 0 40px rgba(198,255,61,.6);
+    z-index:30;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+    max-width:75%;
+  }
+  .goodbro-popup.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1) rotate(-4deg);
+  }
+  .goodbro-popup img{
+    max-width:180px;
+    max-height:150px;
+    object-fit:contain;
+    border-radius:6px;
+    border:2px solid var(--black);
+    background:var(--black-2);
+  }
+  .goodbro-popup .txt{
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    letter-spacing:3px;
+    color:var(--black);
+    text-shadow:1px 1px 0 rgba(255,255,255,.3);
+    animation:goodbro-wiggle 1s ease-in-out infinite;
+  }
+  @keyframes goodbro-wiggle{
+    0%,100%{transform:rotate(0deg);}
+    25%{transform:rotate(-3deg);}
+    75%{transform:rotate(3deg);}
+  }
+
+  /* ============ END GAME IMAGE + RANDOM TEXT ============ */
+  .end-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    width:100%;
+  }
+  .end-img{
+    max-width:200px;
+    max-height:150px;
+    object-fit:contain;
+    border:2px solid var(--lime);
+    border-radius:8px;
+    box-shadow:4px 4px 0 rgba(0,0,0,.6), 0 0 20px rgba(198,255,61,.4);
+    animation:end-img-in .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes end-img-in{
+    0%{transform:scale(.3) rotate(-15deg); opacity:0;}
+    60%{transform:scale(1.08) rotate(3deg); opacity:1;}
+    100%{transform:scale(1) rotate(0deg); opacity:1;}
+  }
+  .end-msg{
+    font-family:'Anton',sans-serif;
+    font-size:15px;
+    letter-spacing:1.5px;
+    color:var(--lime);
+    text-shadow:2px 2px 0 var(--wine);
+    max-width:320px;
+    line-height:1.3;
+    animation:end-msg-in .6s .2s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes end-msg-in{
+    0%{transform:translateY(20px) scale(.8); opacity:0;}
+    100%{transform:translateY(0) scale(1); opacity:1;}
+  }
+  .end-sub{
+    font-size:10px;
+    color:var(--grey);
+    letter-spacing:1px;
+    margin-top:2px;
+    animation:end-msg-in .6s .35s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
+  /* ============ INSTRUCTION START ============ */
+  .instruction-box{
+    background:var(--black-3);
+    border:1px dashed var(--grey-dim);
+    border-radius:6px;
+    padding:12px 16px;
+    margin-bottom:14px;
+    font-size:10px;
+    line-height:1.9;
+    color:var(--paper);
+    text-align:left;
+    max-width:340px;
+    animation:instr-in .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .instruction-box b{color:var(--lime);}
+  .instruction-box .row{display:flex; gap:6px; align-items:center;}
+  @keyframes instr-in{
+    0%{transform:translateY(10px); opacity:0;}
+    100%{transform:translateY(0); opacity:1;}
+  }
 
   @media (max-width:600px){
     #gameStage{height:340px;}
@@ -1086,7 +1197,6 @@
   </div>
 </div>
 
-<!-- UNLOCK TOAST -->
 <div class="unlock-toast" id="unlockToast">🎉 SECRET UNLOCKED!</div>
 
 <!-- GAME MODAL -->
@@ -1099,19 +1209,32 @@
     <div class="game-info">
       <div>SCORE<span class="score-val" id="gameScore">0</span></div>
       <div>BEST<span class="best-val" id="gameBest">0</span></div>
-      <div>TIME<span class="timer-val" id="gameTimer">30</span></div>
+      <div>TIME<span class="timer-val" id="gameTimer">15</span></div>
     </div>
     <div id="gameStage">
+      <div class="goodbro-popup" id="goodBroPopup">
+        <img src="ryulmeme.png" alt="good bro">
+        <div class="txt">GOOD BRO</div>
+      </div>
+
       <div class="game-overlay" id="gameStartOverlay">
         <h2>CATCH THE SHOT</h2>
-        <p>Catch the good stuff — avoid the bad stuff.<br>You have <b style="color:var(--lime)">30 seconds</b>. Good luck!</p>
+        <div class="instruction-box">
+          <div class="row"><b>▸</b> You have <b>15 seconds</b></div>
+          <div class="row"><b>▸</b> Tap/click the good stuff: 🎤 💿 🎧 ★</div>
+          <div class="row"><b>▸</b> Avoid the bad stuff: 💣 ❌</div>
+          <div class="row"><b>▸</b> Reach 8 points for a surprise 👀</div>
+        </div>
         <button class="game-btn" id="gameStartBtn">▶ START</button>
       </div>
       <div class="game-overlay" id="gameEndOverlay" style="display:none">
-        <h2>TIME'S UP!</h2>
-        <div class="final-score" id="finalScore">0</div>
-        <div class="label" id="finalLabel">YOUR SCORE</div>
-        <button class="game-btn" id="gameAgainBtn">↻ PLAY AGAIN</button>
+        <div class="end-wrap">
+          <img class="end-img" src="lngshot.png" alt="lngshot">
+          <div class="end-msg" id="endMsg"></div>
+          <div class="final-score" id="finalScore">0</div>
+          <div class="label" id="finalLabel">YOUR SCORE</div>
+          <button class="game-btn" id="gameAgainBtn">↻ PLAY AGAIN</button>
+        </div>
       </div>
     </div>
     <div class="legend">
@@ -1500,22 +1623,29 @@ document.getElementById('searchInput').addEventListener('keydown', e=>{
 const gameState = {
   running: false,
   score: 0,
-  timeLeft: 30,
+  timeLeft: 15,
   best: Number(localStorage.getItem('lngshot_game_best') || 0),
   items: [],
   lastSpawn: 0,
-  spawnInterval: 750,
+  spawnInterval: 620,
   rafId: null,
-  timerId: null
+  timerId: null,
+  goodBroShown: false
 };
+
+const END_MESSAGES = [
+  'BRO REALLY BEAT THE GAME 💀',
+  'MISSION ACCOMPLISHED. WE HAVE A GENIUS.',
+  'YOU JUST GAINED 1000 AURA'
+];
 
 const ITEMS = [
   { emoji:'🎤', points:1, type:'good' },
   { emoji:'💿', points:1, type:'good' },
   { emoji:'🎧', points:1, type:'good' },
-  { emoji:'★', points:2, type:'good', weight:0.5 },
-  { emoji:'💣', points:-3, type:'bad', weight:0.6 },
-  { emoji:'❌', points:-5, type:'bad', weight:0.4 }
+  { emoji:'★', points:2, type:'good' },
+  { emoji:'💣', points:-3, type:'bad' },
+  { emoji:'❌', points:-5, type:'bad' }
 ];
 
 function pickItem(){
@@ -1538,7 +1668,8 @@ function spawnItem(){
   stage.appendChild(el);
 
   const stageH = stage.clientHeight;
-  const speed = 1.4 + Math.random()*1.2 + (gameState.score > 30 ? 0.6 : 0);
+  // Faster fall speed
+  const speed = 2.0 + Math.random()*1.4 + (gameState.score > 20 ? 0.7 : 0);
 
   const obj = {
     el,
@@ -1549,7 +1680,6 @@ function spawnItem(){
     type: item.type,
     hit: false
   };
-  el.dataset.idx = gameState.items.length;
   el.addEventListener('pointerdown', e => handleHit(obj, e));
   gameState.items.push(obj);
 }
@@ -1562,12 +1692,17 @@ function handleHit(obj, e){
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
 
-  // Add points
+  const prevScore = gameState.score;
   gameState.score += obj.points;
   if(gameState.score < 0) gameState.score = 0;
   document.getElementById('gameScore').textContent = gameState.score;
 
-  // Popup
+  // Good Bro popup at 8 points (chỉ 1 lần)
+  if(!gameState.goodBroShown && prevScore < 8 && gameState.score >= 8){
+    gameState.goodBroShown = true;
+    showGoodBro();
+  }
+
   const pop = document.createElement('div');
   pop.className = 'pop-up ' + (obj.points >= 0 ? 'good' : 'bad');
   pop.textContent = (obj.points >= 0 ? '+' : '') + obj.points;
@@ -1576,9 +1711,14 @@ function handleHit(obj, e){
   stage.appendChild(pop);
   setTimeout(()=> pop.remove(), 600);
 
-  // Remove item
   obj.el.remove();
   obj.dead = true;
+}
+
+function showGoodBro(){
+  const popup = document.getElementById('goodBroPopup');
+  popup.classList.add('show');
+  setTimeout(()=> popup.classList.remove('show'), 2000);
 }
 
 function gameLoop(ts){
@@ -1586,14 +1726,12 @@ function gameLoop(ts){
   const stage = document.getElementById('gameStage');
   const stageH = stage.clientHeight;
 
-  // Spawn logic
   if(ts - gameState.lastSpawn > gameState.spawnInterval){
     spawnItem();
     gameState.lastSpawn = ts;
   }
 
-  // Move items
-  const speedMult = gameState.timeLeft < 10 ? 1.5 : 1;
+  const speedMult = gameState.timeLeft < 5 ? 1.4 : 1;
   for(let i = gameState.items.length - 1; i >= 0; i--){
     const obj = gameState.items[i];
     if(obj.dead){ gameState.items.splice(i,1); continue; }
@@ -1609,19 +1747,20 @@ function gameLoop(ts){
 }
 
 function startGame(){
-  // Reset
   gameState.running = true;
   gameState.score = 0;
-  gameState.timeLeft = 30;
+  gameState.timeLeft = 15;
+  gameState.goodBroShown = false;
   gameState.items.forEach(o => o.el && o.el.remove());
   gameState.items = [];
   gameState.lastSpawn = 0;
 
   document.getElementById('gameScore').textContent = '0';
-  document.getElementById('gameTimer').textContent = '30';
+  document.getElementById('gameTimer').textContent = '15';
   document.getElementById('gameBest').textContent = gameState.best;
   document.getElementById('gameStartOverlay').style.display = 'none';
   document.getElementById('gameEndOverlay').style.display = 'none';
+  document.getElementById('goodBroPopup').classList.remove('show');
 
   gameState.rafId = requestAnimationFrame(gameLoop);
 
@@ -1643,6 +1782,11 @@ function endGame(){
 
   const final = gameState.score;
   document.getElementById('finalScore').textContent = final;
+
+  // Random end message
+  const msg = END_MESSAGES[Math.floor(Math.random() * END_MESSAGES.length)];
+  document.getElementById('endMsg').textContent = msg;
+
   const label = document.getElementById('finalLabel');
   if(final > gameState.best){
     gameState.best = final;
@@ -1665,8 +1809,8 @@ function openGame(){
   document.getElementById('gameStartOverlay').style.display = 'flex';
   document.getElementById('gameEndOverlay').style.display = 'none';
   document.getElementById('gameScore').textContent = '0';
-  document.getElementById('gameTimer').textContent = '30';
-  // Reset items in case
+  document.getElementById('gameTimer').textContent = '15';
+  document.getElementById('goodBroPopup').classList.remove('show');
   gameState.items.forEach(o => o.el && o.el.remove());
   gameState.items = [];
 }
@@ -1692,7 +1836,6 @@ document.getElementById('gameModal').addEventListener('click', e=>{
   if(e.target.id === 'gameModal') closeGame();
 });
 
-// Prevent scroll while playing on mobile
 document.getElementById('gameStage').addEventListener('touchstart', e=>{
   if(gameState.running) e.preventDefault();
 }, {passive:false});
