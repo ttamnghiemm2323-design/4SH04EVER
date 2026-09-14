@@ -320,12 +320,11 @@
   .promo-strip{
     margin-top:26px;
     display:grid;
-    grid-template-columns:repeat(3,1fr) 260px;
+    grid-template-columns:1fr 260px;
     gap:14px;
     align-items:stretch;
   }
-  @media (max-width:900px){ .promo-strip{grid-template-columns:1fr 1fr; } .promo-strip > :last-child{grid-column:1/-1;} }
-  @media (max-width:560px){ .promo-strip{grid-template-columns:1fr;} }
+  @media (max-width:700px){ .promo-strip{grid-template-columns:1fr;} }
   .promo-item{
     background:var(--black-2);
     border:1px solid var(--grey-dim);
@@ -388,6 +387,15 @@
   .pl-row .d{color:var(--grey);}
   .pl-row.now{color:var(--lime);}
   .pl-row.now .n{color:var(--lime);}
+
+  .socials-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+  .social-btn{
+    display:flex; align-items:center; gap:8px; padding:10px 12px;
+    background:var(--black-3); border:1px solid var(--grey-dim); border-radius:6px;
+    font-size:10px; letter-spacing:1px; color:var(--paper);
+  }
+  .social-btn:hover{border-color:var(--lime); color:var(--lime);}
+  .social-btn .ic{font-size:14px;}
 
   /* ---- blog / banner / faves row ---- */
   .grid-blog{
@@ -515,14 +523,7 @@
   .member-photo{aspect-ratio:3/4;background:var(--black-2);overflow:hidden;}
   .member-photo img{width:100%;height:100%;object-fit:cover;}
   .member-name{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;padding:9px 4px 4px;}
-  .member-detail-wrap{max-width:1180px;margin:22px auto;padding:0 22px;}
-  .member-detail{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:18px;}
-  .member-detail-photo{background:var(--black-3);border:1px solid var(--grey-dim);min-height:420px;}
-  .member-detail-photo img{width:100%;height:100%;min-height:420px;object-fit:cover;}
-  .member-detail-info h2{font-family:'Anton',sans-serif;font-size:28px;margin-bottom:8px;}
-  .member-detail-info h3{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;margin:16px 0 5px;color:var(--blue-bright);}
-  .member-meta{font-size:10px;color:var(--grey);letter-spacing:1px;}
-  @media (max-width:800px){.member-grid{grid-template-columns:1fr 1fr}.member-detail{grid-template-columns:1fr}.member-detail-photo{min-height:0}.member-detail-photo img{min-height:0;max-height:520px;}}
+  @media (max-width:800px){.member-grid{grid-template-columns:1fr 1fr}}
 
   .album-modal{display:none;position:fixed;inset:0;background:rgba(11,11,12,.94);z-index:100;overflow:auto;padding:30px 20px;}
   .album-modal.open{display:block;}
@@ -538,7 +539,6 @@
   .album-song-link a{color:var(--blue-bright);}
   @media(max-width:700px){.album-detail-grid{grid-template-columns:1fr;}}
 
-  .coming-soon-block{min-height:170px;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:42px;letter-spacing:2px;}
   .vote-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
   .vote-option{display:flex;align-items:center;gap:9px;padding:11px 9px;border-bottom:1px dashed var(--grey-dim);cursor:pointer;font-size:11px;}
   .vote-option:hover{background:var(--black-3);}
@@ -624,7 +624,7 @@
         <h1 class="hero-headline">MADE 4<br>THE BLOCK</h1>
         <p class="hero-sub">Hey, what's good? It's Long Shot 4sho, and we out. Peace.</p>
         <div class="hero-btns">
-          <a class="btn-solid" href="https://www.youtube.com/" target="_blank" rel="noopener">listen now</a>
+          <a class="btn-solid" href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener">listen now</a>
           <a class="btn-solid alt" href="#about-section">about us</a>
         </div>
         <div class="hero-links"><span>Made by Shotties in Vietnam</span></div>
@@ -645,7 +645,7 @@
         <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">✉ new message!</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
         <div class="win-body msg-body">
           <div>
-            <div><span class="heart">♥</span> you have (1) new message</div>
+            <div id="message-line"><span class="heart">♥</span> you have (1) new message</div>
             <button id="message-ok">ok</button>
             <div id="love-message" style="display:none;margin-top:10px;color:var(--paper);font-size:11px;line-height:1.5;">
               Love you, Shotties
@@ -659,7 +659,7 @@
         <div class="win-body">
           <div class="np-track">
             <div class="np-thumb"></div>
-            <div class="np-info"><b>MOONWALKING</b>by lngshot4sho</div>
+            <div class="np-info"><b>MOONWALKIN</b>by lngshot4sho</div>
           </div>
           <div class="np-bar"></div>
           <div class="np-controls"><span>⏮</span><span>⏸</span><span>⏭</span></div>
@@ -677,9 +677,7 @@
 
   <!-- promo strip -->
   <div class="promo-strip">
-    <div class="promo-item"><span class="ic">★</span><div><div class="tt">member spotlight</div><div class="sm">meet the boys</div></div></div>
-    <div class="promo-item"><span class="ic">◆</span><div><div class="tt">shottie archive</div><div class="sm">memories from the fandom</div></div></div>
-    <div class="promo-item"><span class="ic">◎</span><div><div class="tt">4SHO timeline</div><div class="sm">from debut to now</div></div></div>
+    <div class="promo-item"><span class="ic">◆</span><div><div class="tt">achievement</div><div class="sm">4SHO wins & milestones, debut to now</div></div></div>
     <div class="join-box">
       <div class="tt">merch code</div>
       <div class="sm">enter a code to unlock something special</div>
@@ -695,25 +693,25 @@
     </div>
 
     <div class="win">
-      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">♥ the block</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">☆ socials</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
       <div class="win-body">
-        <div class="block-photos">
-          <div class="block-photo">◇</div>
-          <div class="block-photo">◇</div>
-          <div class="block-photo">◇</div>
+        <div class="block-tag"><b>FOLLOW US</b><br>stay updated wherever you scroll.</div>
+        <div class="socials-grid">
+          <a class="social-btn" href="https://www.instagram.com/lngshot4sho/" target="_blank" rel="noopener"><span class="ic">◎</span>instagram</a>
+          <a class="social-btn" href="https://www.tiktok.com/@lngshot4sho" target="_blank" rel="noopener"><span class="ic">♪</span>tiktok</a>
+          <a class="social-btn" href="https://x.com/lngshot4sho" target="_blank" rel="noopener"><span class="ic">✕</span>twitter</a>
+          <a class="social-btn" href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener"><span class="ic">▶</span>youtube</a>
         </div>
-        
-        <button class="upload-btn" onclick="document.getElementById('archive-note').scrollIntoView({behavior:'smooth'})">view archive</button>
       </div>
     </div>
 
     <div class="win">
-      <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">☰ shottie board</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
-      <div class="win-body" id="playlist-body">
-          <div class="block-tag"><b>COMING SOON</b><br>a place for fan picks, polls and community updates.</div>
-          <div class="pl-row"><span class="n">01</span><span class="t">favorite track poll</span><span class="d">vote</span></div>
-          <div class="pl-row"><span class="n">02</span><span class="t">shottie choice</span><span class="d">soon</span></div>
-          <div class="pl-row"><span class="n">03</span><span class="t">monthly fan pick</span><span class="d">soon</span></div>
+      <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">☰ 4SHO timeline</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body">
+          <div class="block-tag"><b>FROM DEBUT TO NOW</b><br>the story so far.</div>
+          <div class="pl-row"><span class="n">01</span><span class="t">pre-debut / trainee days</span><span class="d">before</span></div>
+          <div class="pl-row"><span class="n">02</span><span class="t">4SHOBOIZ MIXTAPE</span><span class="d">debut</span></div>
+          <div class="pl-row now"><span class="n">03</span><span class="t">4SHOVILLE era</span><span class="d">now</span></div>
         </div>
     </div>
   </div>
@@ -753,9 +751,10 @@
       <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">▤ shot notes</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
       <div class="win-body">
         <ul class="blog-list">
-            <li><span class="tag">behind the scenes</span><a href="#">4SHO behind the scenes</a></li>
-            <li><span class="tag">for show</span><a href="#">for show</a></li>
-            <li><span class="tag">pre-debut</span><a href="#">pre-debut</a></li>
+            <li><span class="tag">4shocover</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">4shocover</a></li>
+            <li><span class="tag">4shotape</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">4shotape</a></li>
+            <li><span class="tag">official audio</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">official audio</a></li>
+            <li><span class="tag">music audio</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">music audio</a></li>
           </ul>
       </div>
     </div>
@@ -777,68 +776,8 @@
       </div>
     </div>
   </div>
-  </div>
-  </div>
 
 </div>
-
-<!-- member detail sections -->
-<section class="member-detail-wrap" id="member-1">
-  <div class="member-detail">
-    <div class="member-detail-photo"><img src="images/member1.jpg" alt="Member 1"></div>
-    <div class="member-detail-info">
-      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">MEMBER 1</span></div>
-      <div class="win-body">
-        <h2>MEMBER 1</h2>
-        <p class="member-meta">BIRTHDAY: ADD DATE HERE</p>
-        <h3>INFORMATION</h3><p>Add profile information, fun facts and anything you want Shotties to know.</p>
-        <h3>FUN FACTS</h3><p>Add fun facts here.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="member-detail-wrap" id="member-2">
-  <div class="member-detail">
-    <div class="member-detail-photo"><img src="images/member2.jpg" alt="Member 2"></div>
-    <div class="member-detail-info">
-      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">MEMBER 2</span></div>
-      <div class="win-body">
-        <h2>MEMBER 2</h2>
-        <p class="member-meta">BIRTHDAY: ADD DATE HERE</p>
-        <h3>INFORMATION</h3><p>Add profile information, fun facts and anything you want Shotties to know.</p>
-        <h3>FUN FACTS</h3><p>Add fun facts here.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="member-detail-wrap" id="member-3">
-  <div class="member-detail">
-    <div class="member-detail-photo"><img src="images/member3.jpg" alt="Member 3"></div>
-    <div class="member-detail-info">
-      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">MEMBER 3</span></div>
-      <div class="win-body">
-        <h2>MEMBER 3</h2>
-        <p class="member-meta">BIRTHDAY: ADD DATE HERE</p>
-        <h3>INFORMATION</h3><p>Add profile information, fun facts and anything you want Shotties to know.</p>
-        <h3>FUN FACTS</h3><p>Add fun facts here.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="member-detail-wrap" id="member-4">
-  <div class="member-detail">
-    <div class="member-detail-photo"><img src="images/member4.jpg" alt="Member 4"></div>
-    <div class="member-detail-info">
-      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">MEMBER 4</span></div>
-      <div class="win-body">
-        <h2>MEMBER 4</h2>
-        <p class="member-meta">BIRTHDAY: ADD DATE HERE</p>
-        <h3>INFORMATION</h3><p>Add profile information, fun facts and anything you want Shotties to know.</p>
-        <h3>FUN FACTS</h3><p>Add fun facts here.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="fan-vote-section" class="win fan-vote-panel" style="margin-top:22px;">
   <div class="win-bar" style="--accent:var(--blue-bright)">
@@ -850,20 +789,18 @@
       <div class="vote-layout">
         <div>
           <div class="block-tag"><b>WHICH ONE DO YOU LIKE THE MOST?</b><br>Select one and submit your vote.</div>
-          <label class="vote-option"><input type="radio" name="trackVote" value="FoShow Boys"><span>FoShow Boys</span></label>
-          <label class="vote-option"><input type="radio" name="trackVote" value="Big Safe Shot"><span>Big Safe Shot</span></label>
-          <label class="vote-option"><input type="radio" name="trackVote" value="Colors"><span>Colors</span></label>
-          <label class="vote-option"><input type="radio" name="trackVote" value="Training"><span>Training</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="4SHOBOIZ"><span>4SHOBOIZ</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="Training Days"><span>Training Days</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="ShotCallers"><span>ShotCallers</span></label>
           <label class="vote-option"><input type="radio" name="trackVote" value="4SHOVILLE"><span>4SHOVILLE</span></label>
           <button class="upload-btn" id="submit-track-vote">submit vote</button>
           <div id="track-vote-status" class="block-tag" style="display:none"></div>
         </div>
         <div class="vote-results" id="track-results">
           <b>VOTE RESULTS</b>
-          <div class="result-row"><span>FoShow Boys</span><strong data-result="FoShow Boys">0</strong></div>
-          <div class="result-row"><span>Big Safe Shot</span><strong data-result="Big Safe Shot">0</strong></div>
-          <div class="result-row"><span>Colors</span><strong data-result="Colors">0</strong></div>
-          <div class="result-row"><span>Training</span><strong data-result="Training">0</strong></div>
+          <div class="result-row"><span>4SHOBOIZ</span><strong data-result="4SHOBOIZ">0</strong></div>
+          <div class="result-row"><span>Training Days</span><strong data-result="Training Days">0</strong></div>
+          <div class="result-row"><span>ShotCallers</span><strong data-result="ShotCallers">0</strong></div>
           <div class="result-row"><span>4SHOVILLE</span><strong data-result="4SHOVILLE">0</strong></div>
         </div>
       </div>
@@ -887,8 +824,8 @@
 <!-- footer ticker -->
 <div class="footer-ticker">
   <div class="ticker-track">
-    <span>NEW EP DROPPING SOON</span><span>·</span><span>FOR SHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
-    <span>NEW EP DROPPING SOON</span><span>·</span><span>FOR SHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
+    <span>NEW EP DROPPING SOON</span><span>·</span><span>4SHOBOSHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
+    <span>NEW EP DROPPING SOON</span><span>·</span><span>4SHOBOSHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
   </div>
 </div>
 
@@ -899,10 +836,10 @@
       <div class="logo">LNG<span style="color:var(--blue-bright)">SHOT</span>4SHO</div>
       <p>© 2026 LNGSHOT4SHO</p>
       <div class="social-row">
-        <a href="YOUR_INSTAGRAM_LINK" target="_blank" rel="noopener">ig</a>
-        <a href="YOUR_TIKTOK_LINK" target="_blank" rel="noopener">tt</a>
-        <a href="YOUR_TWITTER_LINK" target="_blank" rel="noopener">tw</a>
-        <a href="YOUR_YOUTUBE_LINK" target="_blank" rel="noopener">yt</a>
+        <a href="https://www.instagram.com/lngshot4sho/" target="_blank" rel="noopener">ig</a>
+        <a href="https://www.tiktok.com/@lngshot4sho" target="_blank" rel="noopener">tt</a>
+        <a href="https://x.com/lngshot4sho" target="_blank" rel="noopener">tw</a>
+        <a href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener">yt</a>
       </div>
     </div>
     <div class="footer-col">
@@ -911,7 +848,7 @@
     </div>
     <div class="footer-col">
       <h4>about</h4>
-      <ul><li><a href="#">members</a></li><li><a href="#">achievements</a></li><li><a href="#">the game</a></li></ul>
+      <ul><li><a href="#about-section">members</a></li><li><a href="#faves">achievements</a></li><li><a href="#">the game</a></li></ul>
     </div>
     <div class="footer-col">
       <h4>help</h4>
@@ -923,8 +860,6 @@
     </div>
   </div>
 </footer>
-
-
 
 <div id="member-page-modal" class="album-modal" aria-hidden="true">
   <div class="album-modal-inner member-page-inner">
@@ -1014,7 +949,7 @@ document.getElementById('album-modal').addEventListener('click',e=>{
 });
 
 document.getElementById('message-ok').addEventListener('click',()=>{
-  const oldMessage = document.querySelector('#message .block-tag');
+  const oldMessage = document.getElementById('message-line');
   const button = document.getElementById('message-ok');
   const love = document.getElementById('love-message');
   if(oldMessage) oldMessage.style.display='none';
@@ -1053,7 +988,7 @@ document.getElementById('learn-more-votes')?.addEventListener('click',()=>{
   document.getElementById('fan-vote-section').scrollIntoView({behavior:'smooth'});
 });
 
-const trackVotes = {'FoShow Boys':0,'Big Safe Shot':0,'Colors':0,'Training':0,'4SHOVILLE':0};
+const trackVotes = {'4SHOBOIZ':0,'Training Days':0,'ShotCallers':0,'4SHOVILLE':0};
 document.getElementById('submit-track-vote')?.addEventListener('click',()=>{
   const chosen = document.querySelector('input[name="trackVote"]:checked');
   const status = document.getElementById('track-vote-status');
@@ -1074,6 +1009,34 @@ document.getElementById('submit-pet-vote')?.addEventListener('click',()=>{
   status.textContent=`Vote submitted — ${chosen.value}`;
   status.style.display='block';
 });
+
+// Member pages
+const memberData = [
+  {name:'MEMBER 1', image:'images/member1.jpg', birthday:'ADD DATE HERE'},
+  {name:'MEMBER 2', image:'images/member2.jpg', birthday:'ADD DATE HERE'},
+  {name:'MEMBER 3', image:'images/member3.jpg', birthday:'ADD DATE HERE'},
+  {name:'MEMBER 4', image:'images/member4.jpg', birthday:'ADD DATE HERE'}
+];
+document.querySelectorAll('[data-member-page]').forEach(card=>{
+  card.addEventListener('click', e=>{
+    e.preventDefault();
+    const member = memberData[Number(card.dataset.memberPage)];
+    document.getElementById('member-page-content').innerHTML = `
+      <div class="member-page-grid">
+        <div class="member-page-image"><img src="${member.image}" alt="${member.name}"></div>
+        <div class="member-page-copy">
+          <h1>${member.name}</h1>
+          <div class="member-meta">BIRTHDAY: ${member.birthday}</div>
+          <h3>INFORMATION</h3>
+          <p>Add the member's profile information here.</p>
+          <h3>FUN FACTS</h3>
+          <p>Add fun facts, interests and other details here.</p>
+        </div>
+      </div>`;
+    const modal=document.getElementById('member-page-modal');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+  });
 });
 document.getElementById('member-page-close')?.addEventListener('click',()=>{
   const modal=document.getElementById('member-page-modal');
@@ -1083,7 +1046,6 @@ document.getElementById('member-page-close')?.addEventListener('click',()=>{
 document.getElementById('member-page-modal')?.addEventListener('click',e=>{
   if(e.target.id==='member-page-modal') document.getElementById('member-page-close').click();
 });
-
 </script>
 </body>
 </html>
