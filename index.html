@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -544,6 +544,11 @@
   .member-page-copy h1{font-family:'Anton',sans-serif;font-size:40px;letter-spacing:1px;margin-bottom:6px;}
   .member-page-copy h3{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;color:var(--blue-bright);margin:20px 0 6px;}
   .member-page-copy p{font-size:11px;line-height:1.7;color:var(--paper);}
+  .member-page-copy ul{margin-top:6px;}
+  .member-page-copy ul li{font-size:11px;line-height:1.8;color:var(--paper);padding-left:14px;position:relative;}
+  .member-page-copy ul li::before{content:'·';position:absolute;left:4px;color:var(--lime);font-weight:bold;}
+  .member-page-copy .member-meta{font-size:11px;color:var(--grey);line-height:1.9;margin-top:6px;}
+  .member-page-copy .member-meta b{color:var(--paper);}
   @media(max-width:700px){.vote-layout,.member-page-grid{grid-template-columns:1fr}.member-page-image{min-height:400px}.member-page-copy h1{font-size:30px;}}
 </style>
 </head>
@@ -1020,25 +1025,149 @@ document.getElementById('submit-pet-vote')?.addEventListener('click',()=>{
 });
 
 const memberData = [
-  {name:'Ohyul', image:'ohyul.jpg', birthday:'ADD DATE HERE'},
-  {name:'Louis', image:'louis.jpg', birthday:'ADD DATE HERE'},
-  {name:'Ryul', image:'ryul.jpg', birthday:'ADD DATE HERE'},
-  {name:'Woojin', image:'woojin.jpg', birthday:'ADD DATE HERE'}
+  {
+    name:'Ohyul',
+    image:'ohyul.jpg',
+    koreanName:'Kwon Oh Yul (권오율)',
+    position:'Leader, Lead Vocalist',
+    training:'5 years',
+    birthday:'January 21, 2006',
+    height:'182cm (5\'11")',
+    blood:'O',
+    mbti:'ISTP',
+    nationality:'South Korea 🇰🇷',
+    motto:'"Just do it"',
+    facts:[
+      'Nicknames: 562, Salmon 🍣, Cat 🐈‍⬛',
+      'Former trainee at KOZ Entertainment',
+      'Self-taught guitarist 🎸',
+      'Loves listening to music and is a huge fan of Ed Sheeran',
+      'Co-writer of "Remedy" by Jay Park (with Louis)',
+      'Appeared in the MV and worked as a backup dancer for "Gimme A Minute" by Jay Park',
+      'Childhood dream: Pilot ✈️',
+      'Has one older sister',
+      'Favorite foods: Spicy food 🌶, Kimchi stew, Jokbal, salmon 🍣 (once got kicked out of a restaurant for eating too much)',
+      'Once ate 30–40 servings of salmon as a trainee',
+      'Usually runs 5km and works out almost every day',
+      'Always the last in the group to catch up with trends — or never knows them at all',
+      'Attended Hanlim Multi Art School – Applied Music Department'
+    ]
+  },
+  {
+    name:'Louis',
+    image:'louis.jpg',
+    koreanName:'Lim Ji Ho (임지호)',
+    position:'Maknae, Main Vocalist',
+    training:'~2 years',
+    birthday:'May 1, 2010',
+    height:'187cm (6\'2")',
+    blood:'B',
+    mbti:'INFJ',
+    nationality:'South Korea 🇰🇷 – France 🇫🇷',
+    motto:'"Work really hard"',
+    facts:[
+      'Full name: Louis Elliot Jourdain Lim',
+      'Nickname given by members: Big Elephant Giant Baby 🐘',
+      'Father is French 🇫🇷, mother is Korean 🇰🇷',
+      'Co-writer of "Remedy" by Jay Park (with Ohyul)',
+      'Shoe size 👟: 300mm',
+      'Childhood dream: Soccer player ⚽',
+      'Hobbies: Playing basketball 🏀, gaming (Roblox, Minecraft, etc.)',
+      'Loves sweets and snacks',
+      'Attended Lycée Français de Seoul (LFS) for 8 years',
+      'Currently attending Hanlim Multi Art School',
+      'Somewhat scared of Ryul because he always teases him',
+      'Grew too fast, so his limbs stretched quickly and his body couldn\'t stay flexible',
+      'Recorded "Moonwalkin\'" at 13 years old',
+      'Sang "Love" by Keyshia Cole at his audition for More Vision and Hanlim entrance',
+      'Speaks Korean, French, English, and a little Spanish',
+      'Only child',
+      'Has a pet cat named Hunter 🐈'
+    ]
+  },
+  {
+    name:'Ryul',
+    image:'ryul.jpg',
+    koreanName:'Kim Ryul (김률)',
+    position:'Main Rapper',
+    training:'3 years',
+    birthday:'September 18, 2006',
+    height:'180cm (5\'11")',
+    blood:'AB',
+    mbti:'ISTJ',
+    nationality:'South Korea 🇰🇷',
+    motto:'Persist to the end',
+    facts:[
+      'Nicknames: yulmu, Gyul (Tangerine 🍊), Kim Gyul, Potato 🥔 (given during RAP:PUBLIC)',
+      'Nicknames given by members: Silly older brother, Lizard 🦎, Poisonous frog 🐸',
+      'According to the members, he is the funniest one',
+      'Can play many instruments, most notably piano 🎹',
+      'Loves playing Minecraft',
+      'Once had a gaming YouTube channel as a kid with about 560 subscribers',
+      'Participated in the reality show: RAP:PUBLIC (2024)',
+      'Childhood dream: Doctor',
+      'Only child',
+      'Attended Hanlim Multi Art School – Film Production major (transferred in senior year)',
+      'Has a pet dog named Coco 🐶',
+      'Studied at KMC Music Academy',
+      'Once composed a song in about 30 minutes',
+      'During the Saucin shoot in Vietnam, he loved pho — once ate 3 bowls in one sitting and gained 2–3kg'
+    ]
+  },
+  {
+    name:'Woojin',
+    image:'woojin.jpg',
+    koreanName:'Jeong Woo Jin (정우진)',
+    position:'Composer, Main Dancer',
+    training:'6 years',
+    birthday:'March 8, 2008',
+    height:'179cm (5\'9.7")',
+    blood:'A',
+    mbti:'ISTP',
+    nationality:'South Korea 🇰🇷',
+    motto:'"If it\'s something I truly love and believe in, I\'ll give it my all until it becomes reality"',
+    facts:[
+      'Nicknames: Jin-E, Corn 🌽',
+      'Appeared in the MV and worked as a backup dancer for "Gimme A Minute" by Jay Park',
+      'Former trainee at Big Hit',
+      'Currently attending Hanlim Multi Art School – Practical Dance major',
+      'All-rounder: dancing, singing, rapping, and songwriting are all above average to great',
+      'Childhood dream: Painter 🎨 (both parents work in art-related fields)',
+      'Daily routine: eats two meals a day and searches for new songs',
+      'Has a scar on one eye from being scratched by his grandmother\'s cat as a child',
+      'Has two pet cats 🐱: Bank and Cloud',
+      'Valedictorian of the A-track (lime)',
+      'Has one younger sister and one younger brother',
+      'Sang "JOAH" by Jay Park at his audition',
+      'During the Saucin shoot, he invited the members to go swimming, but they went for a massage without inviting him'
+    ]
+  }
 ];
+
 document.querySelectorAll('[data-member-page]').forEach(card=>{
   card.addEventListener('click', e=>{
     e.preventDefault();
-    const member = memberData[Number(card.dataset.memberPage)];
+    const m = memberData[Number(card.dataset.memberPage)];
     document.getElementById('member-page-content').innerHTML = `
       <div class="member-page-grid">
-        <div class="member-page-image"><img src="${member.image}" alt="${member.name}"></div>
+        <div class="member-page-image"><img src="${m.image}" alt="${m.name}"></div>
         <div class="member-page-copy">
-          <h1>${member.name}</h1>
-          <div class="member-meta">BIRTHDAY: ${member.birthday}</div>
-          <h3>INFORMATION</h3>
-          <p>Add the member's profile information here.</p>
+          <h1>${m.name}</h1>
+          <div class="member-meta">
+            <b>Korean Name:</b> ${m.koreanName}<br>
+            <b>Position:</b> ${m.position}<br>
+            <b>Training Period:</b> ${m.training}<br>
+            <b>Birthday:</b> ${m.birthday}<br>
+            <b>Height:</b> ${m.height}<br>
+            <b>Blood Type:</b> ${m.blood}<br>
+            <b>MBTI:</b> ${m.mbti}<br>
+            <b>Nationality:</b> ${m.nationality}<br>
+            <b>Motto:</b> ${m.motto}
+          </div>
           <h3>FUN FACTS</h3>
-          <p>Add fun facts, interests and other details here.</p>
+          <ul>
+            ${m.facts.map(f=>`<li>${f}</li>`).join('')}
+          </ul>
         </div>
       </div>`;
     const modal=document.getElementById('member-page-modal');
