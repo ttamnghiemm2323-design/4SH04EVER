@@ -771,7 +771,7 @@
   .legend span b{color:var(--lime); font-weight:normal;}
   .legend span.bad b{color:var(--wine-bright);}
 
-  /* ============ GOOD BRO POPUP (8 điểm) — 3s, pause game ============ */
+  /* ============ GOOD BRO POPUP — 2s ============ */
   .goodbro-popup{
     position:absolute;
     inset:0;
@@ -833,18 +833,18 @@
     50%{transform:translateY(-10px) scale(1.15);}
   }
 
-  /* ============ END GAME — image nhỏ, không che text ============ */
+  /* ============ END GAME — image center, no emoji ============ */
   .end-wrap{
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:8px;
+    gap:10px;
     width:100%;
   }
   .end-img{
-    max-width:120px;
-    max-height:100px;
+    max-width:140px;
+    max-height:120px;
     object-fit:contain;
     border:2px solid var(--lime);
     border-radius:8px;
@@ -858,14 +858,14 @@
   }
   .end-msg{
     font-family:'Bangers',cursive;
-    font-size:clamp(22px, 5vw, 38px);
-    letter-spacing:2px;
+    font-size:clamp(16px, 3.5vw, 22px);
+    letter-spacing:1.5px;
     color:var(--lime);
     text-shadow:
       2px 2px 0 var(--wine),
-      4px 4px 0 var(--black);
-    max-width:380px;
-    line-height:1.1;
+      3px 3px 0 var(--black);
+    max-width:340px;
+    line-height:1.2;
     text-align:center;
     animation:end-msg-in .7s .2s cubic-bezier(.34,1.56,.64,1) both;
     margin: 4px 0;
@@ -874,23 +874,6 @@
     0%{transform:translateY(20px) scale(.6) rotate(-5deg); opacity:0;}
     70%{transform:translateY(-4px) scale(1.08) rotate(2deg); opacity:1;}
     100%{transform:translateY(0) scale(1) rotate(0deg); opacity:1;}
-  }
-  .end-emoji{
-    font-size:clamp(22px, 4vw, 34px);
-    letter-spacing:8px;
-    animation:end-emoji-bounce .8s ease-in-out infinite;
-    filter:drop-shadow(0 0 8px rgba(198,255,61,.6));
-  }
-  @keyframes end-emoji-bounce{
-    0%,100%{transform:translateY(0) scale(1) rotate(-3deg);}
-    50%{transform:translateY(-6px) scale(1.15) rotate(3deg);}
-  }
-  .end-sub{
-    font-size:10px;
-    color:var(--grey);
-    letter-spacing:1px;
-    margin-top:2px;
-    animation:end-msg-in .7s .35s cubic-bezier(.34,1.56,.64,1) both;
   }
 
   /* ============ INSTRUCTION START ============ */
@@ -1263,7 +1246,6 @@
       <div class="game-overlay" id="gameEndOverlay" style="display:none">
         <div class="end-wrap">
           <img class="end-img" src="lngshot.jpg" alt="lngshot">
-          <div class="end-emoji">😱🔥💀</div>
           <div class="end-msg" id="endMsg"></div>
           <div class="final-score" id="finalScore">0</div>
           <div class="label" id="finalLabel">YOUR SCORE</div>
@@ -1751,18 +1733,16 @@ function handleHit(obj, e){
 function showGoodBro(){
   // Pause game
   gameState.paused = true;
-  // Clear timer interval (pause countdown)
   clearInterval(gameState.timerId);
 
   const popup = document.getElementById('goodBroPopup');
   popup.classList.add('show');
 
-  // 3 giây
+  // 2 giây
   gameState.goodBroTimeout = setTimeout(()=>{
     popup.classList.remove('show');
     // Resume game
     gameState.paused = false;
-    // Restart timer interval
     gameState.timerId = setInterval(()=>{
       if(gameState.paused) return;
       gameState.timeLeft--;
@@ -1771,7 +1751,7 @@ function showGoodBro(){
         endGame();
       }
     }, 1000);
-  }, 3000);
+  }, 2000);
 }
 
 function gameLoop(ts){
