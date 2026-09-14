@@ -26,14 +26,13 @@
     font-family:'Space Mono',monospace;
     background:var(--black);
     color:var(--paper);
-    padding-bottom:34px; /* room for taskbar */
+    padding-bottom:34px;
   }
   a{color:inherit;text-decoration:none;}
   button{font-family:inherit;cursor:pointer;}
   ul{list-style:none;}
   img{max-width:100%;display:block;}
 
-  /* ============ shared "window" widget ============ */
   .win{
     border:1px solid var(--grey-dim);
     border-radius:7px;
@@ -68,7 +67,6 @@
   }
   .win-body{padding:16px;}
 
-  /* ============ ticker ============ */
   .ticker{
     background:var(--black-3);
     border-bottom:1px solid var(--grey-dim);
@@ -99,7 +97,6 @@
   }
   .topbar-mini a:hover{color:var(--lime);}
 
-  /* ============ header / nav ============ */
   header.topnav{
     display:flex;
     align-items:center;
@@ -161,10 +158,8 @@
     font-size:13px;
   }
 
-  /* ============ page container ============ */
   .page{max-width:1180px; margin:0 auto; padding:22px;}
 
-  /* ---- top layout: sidebar / hero / rightcol ---- */
   .layout-top{
     display:grid;
     grid-template-columns:200px 1fr 220px;
@@ -316,7 +311,6 @@
   }
   .sticky-note b{display:block; margin-bottom:4px; font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px;}
 
-  /* ---- promo strip ---- */
   .promo-strip{
     margin-top:26px;
     display:grid;
@@ -352,7 +346,6 @@
   }
   .join-row button{background:var(--wine); border:none; color:var(--paper); font-size:10px; letter-spacing:1px; padding:0 18px;}
 
-  /* ---- 3-col content grid ---- */
   .grid-3{
     margin-top:22px;
     display:grid;
@@ -397,7 +390,6 @@
   .social-btn:hover{border-color:var(--lime); color:var(--lime);}
   .social-btn .ic{font-size:14px;}
 
-  /* ---- blog / banner / faves row ---- */
   .grid-blog{
     margin-top:16px;
     display:grid;
@@ -446,7 +438,6 @@
   .faves-row .ic{color:var(--wine-bright); margin-right:6px;}
   .faves-row .count{color:var(--lime);}
 
-  /* ---- footer ticker ---- */
   .footer-ticker{
     margin-top:26px;
     background:var(--wine);
@@ -459,7 +450,6 @@
   }
   .footer-ticker .ticker-track{animation-duration:20s;}
 
-  /* ---- site footer ---- */
   .site-footer{
     background:var(--black);
     border-top:2px solid var(--grey-dim);
@@ -484,7 +474,6 @@
   }
   .social-row a:hover{border-color:var(--lime); color:var(--lime);}
 
-  /* ---- taskbar ---- */
   .taskbar{
     position:fixed; left:0; right:0; bottom:0;
     height:34px;
@@ -560,7 +549,6 @@
 </head>
 <body>
 
-<!-- top ticker -->
 <div class="ticker">
   <div class="ticker-track">
         <span>★ MEMBER SPOTLIGHT</span>
@@ -580,7 +568,6 @@
   <span>☆</span>
 </div>
 
-<!-- header -->
 <header class="topnav">
   <div class="logo">LNG<span>SHOT</span>4SHO</div>
   <nav class="mainnav">
@@ -599,7 +586,6 @@
 
 <div class="page">
 
-  <!-- hero row: sidebar / hero / right widgets -->
   <div class="layout-top" id="hero">
     <aside>
       <div class="win quicklinks">
@@ -675,7 +661,6 @@
     </aside>
   </div>
 
-  <!-- promo strip -->
   <div class="promo-strip">
     <div class="promo-item"><span class="ic">◆</span><div><div class="tt">achievement</div><div class="sm">4SHO wins & milestones, debut to now</div></div></div>
     <div class="join-box">
@@ -685,7 +670,6 @@
     </div>
   </div>
 
-  <!-- 3 col grid -->
   <div class="grid-3" id="drops">
     <div class="win" id="drops-window">
       <div class="win-bar" style="--accent:var(--wine)"><span class="win-name">♥ latest drops</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
@@ -716,7 +700,6 @@
     </div>
   </div>
 
-  <!-- about section -->
   <section id="about-section" class="win" style="margin-top:22px;">
     <div class="win-bar" style="--accent:var(--blue-bright)">
       <span class="win-name">♥ about lngshot</span>
@@ -745,7 +728,6 @@
     </div>
   </section>
 
-  <!-- blog / banner / faves -->
   <div class="grid-blog" id="members-sec">
     <div class="win">
       <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">▤ shot notes</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
@@ -821,7 +803,6 @@
   </div>
 </section>
 
-<!-- footer ticker -->
 <div class="footer-ticker">
   <div class="ticker-track">
     <span>NEW EP DROPPING SOON</span><span>·</span><span>4SHOBOSHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
@@ -829,7 +810,6 @@
   </div>
 </div>
 
-<!-- site footer -->
 <footer class="site-footer" id="footer">
   <div class="footer-grid">
     <div class="footer-col footer-brand">
@@ -873,7 +853,6 @@
     <div id="album-detail"></div>
   </div>
 </div>
-<!-- taskbar -->
 <div class="taskbar">
   <button class="start-btn">◆ start</button>
   <div class="tab-pill">🗎 home.html</div>
@@ -899,12 +878,33 @@ const albums = [
       ['Next 2 U (Carol Remix) (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
       ['Next 2 U (Carol Remix) (Sped Up) (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk']
     ] },
-  { id:'shotcaller', name:'SHOT CALLER', image:'images/album2.jpg', dur:'12:05',
-    tracks:[['TRACK 01','https://www.youtube.com/'],['TRACK 02','https://www.youtube.com/'],['TRACK 03','https://www.youtube.com/']] },
-  { id:'trainingday', name:'TRAINING DAY', image:'images/album3.jpg', dur:'14:22',
-    tracks:[['TRACK 01','https://www.youtube.com/'],['TRACK 02','https://www.youtube.com/'],['TRACK 03','https://www.youtube.com/']] },
-  { id:'4shoville', name:'4SHOVILLE', image:'images/album4.jpg', dur:'26:18',
-    tracks:[['TRACK 01','https://www.youtube.com/'],['TRACK 02','https://www.youtube.com/'],['TRACK 03','https://www.youtube.com/']] }
+  { id:'shotcaller', name:'SHOT CALLERS', image:'images/shot-callers.jpg', dur:'15:23',
+    tracks:[
+      ['Backseat','https://youtu.be/B3Dyzl5dyKY?si=3jefaByrRGsBD4tT'],
+      ["Saucin'",'https://youtu.be/GFRu5ea_klk?si=ySI4UUNxAzF_9TvG'],
+      ["Moonwalkin'",'https://youtu.be/HJgdT15UT4k?si=gX_HnB2JxTpx_hui'],
+      ['FaceTime','https://youtu.be/GGe5OkNgZjQ?si=i9jpyEPolRSEiETh'],
+      ['Never Let Go','https://youtu.be/sOsh_GKOny4?si=uarh26WcmtaHt-V0']
+    ] },
+  { id:'trainingday', name:'TRAINING DAY', image:'images/training-day.jpg', dur:'—',
+    tracks:[
+      ['Good Girls by LOUIS LIM (LNGSHOT)','https://youtu.be/vxdfyofrku8?si=Q4qFDiz-6sVh2rJF'],
+      ['Boo Thang by WOOJIN (LNGSHOT)','https://youtu.be/sT26L3VK9PI?si=YqPXfI22gQWl3cGM'],
+      ['Summer Eyes by OHYUL (LNGSHOT)','https://youtu.be/BpaPhGGEPS8?si=DZEoQItUVuyIJuML'],
+      ['For Us by RYUL (LNGSHOT)','https://youtu.be/z8-CJIUyg9A?si=bTyv9KZY-Q6LzSFt'],
+      ['Vanilla Days Lyrics','https://youtu.be/P2llSm9tZvA?si=m8n314xRPNjbX-jp']
+    ] },
+  { id:'4shoville', name:'4SHOVILLE', image:'images/album4.jpg', dur:'27:39',
+    tracks:[
+      ['4sho 4sho','https://youtu.be/Q1sE699jthg?si=mTgMAgiqA30eP779'],
+      ['Yeah! Yeah!','https://youtu.be/XdujOljuyNw?si=_Pc2mKUyCxw3gVgM'],
+      ['No Hi, No Hey','https://youtu.be/3IfOZT4dOWM?si=5KdP4wPQGETIk6FJ'],
+      ['Run It Up','https://youtu.be/LSXiFgGlmDw?si=RUe6DmcHKyYEvOu5'],
+      ['Gukbbong','https://youtu.be/1Ya1Tp3vm7k?si=BIzK22IEk2cmOb12'],
+      ['Moya','https://youtu.be/zOgfFtZ5QBY?si=nK1x8TKhf9XeEtAm'],
+      ['The Purge 4shomix','https://youtu.be/XWSNhIENE_Q?si=E0CkJvJSns4gVBpV'],
+      ['Public Enemy 4shomix (feat. DJ Wegun)','https://youtu.be/DEl-ARI3Y7g?si=S7O6S9CfARf2ZjaD']
+    ] }
 ];
 
 document.getElementById('drops-body').innerHTML = albums.map(al=>`
@@ -971,7 +971,6 @@ document.getElementById('message-ok').addEventListener('click',()=>{
 document.getElementById('merch-go').addEventListener('click',()=>{
   const code=document.getElementById('merch-code').value.trim();
   if(!code) return;
-  // Replace this later with the real merch-code -> game URL mapping.
   alert('Code received: ' + code);
 });
 
@@ -985,7 +984,6 @@ function tick(){
 tick();
 setInterval(tick,15000);
 
-// Shottie Board -> Fan Vote
 document.querySelectorAll('.board-link').forEach(card=>{
   card.addEventListener('click',()=>{
     const type = card.dataset.board;
@@ -1021,7 +1019,6 @@ document.getElementById('submit-pet-vote')?.addEventListener('click',()=>{
   status.style.display='block';
 });
 
-// Member pages
 const memberData = [
   {name:'MEMBER 1', image:'images/member1.jpg', birthday:'ADD DATE HERE'},
   {name:'MEMBER 2', image:'images/member2.jpg', birthday:'ADD DATE HERE'},
