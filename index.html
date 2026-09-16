@@ -1,3 +1,686 @@
+LNGSHOT website game modal
+I'll analyze your existing code and add ONLY the game modal + the "4shoville" trigger, without changing anything else.
+
+Looking at your existing code, I can see:
+
+You already have a gameModal with "CATCH_THE_SHOT" game
+You already have a merch code system at #merch-code and #merch-go
+The current merch code handler just shows an alert
+The safest approach: Replace the existing game modal content with the new "4SHO: THE LOST FILE" game, and modify the merch code handler to open the game when "4shoville" is entered.
+
+However, you said NOT to remove existing functionality. So I'll:
+
+Keep the existing "CATCH_THE_SHOT" game intact (accessible via search easter egg)
+Add a SECOND game modal for "4SHO: THE LOST FILE"
+Add the "4shoville" trigger to the existing merch code handler (smallest possible change: add an if check before the alert)
+Here is the complete modified file:
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LNGSHOT4SHO — home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0b0b0c;
+    --black-2:#141416;
+    --black-3:#1b1b1e;
+    --wine:#5c1622;
+    --wine-bright:#c23652;
+    --blue:#1f3f57;
+    --blue-bright:#3e86b5;
+    --lime:#c6ff3d;
+    --paper:#e8e2d1;
+    --grey:#8d8a83;
+    --grey-dim:#3a3834;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Mono',monospace;
+    background:var(--black);
+    color:var(--paper);
+    padding-bottom:34px;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+
+  .win{
+    border:1px solid var(--grey-dim);
+    border-radius:7px;
+    overflow:hidden;
+    background:var(--black-2);
+    box-shadow:6px 6px 0 rgba(0,0,0,.55);
+  }
+  .win-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:7px 8px 7px 12px;
+    background:linear-gradient(180deg, var(--accent, var(--wine)), color-mix(in srgb, var(--accent, var(--wine)) 55%, black));
+    border-bottom:1px solid rgba(0,0,0,.4);
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--paper);
+    text-shadow:1px 1px 0 rgba(0,0,0,.4);
+  }
+  .win-bar .win-name{display:flex;align-items:center;gap:6px;}
+  .win-dots{display:flex;gap:4px;}
+  .win-dots span{
+    width:15px;height:14px;
+    border:1px solid rgba(232,226,209,.6);
+    border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:8px;
+    line-height:1;
+    color:var(--paper);
+    background:rgba(0,0,0,.15);
+  }
+  .win-body{padding:16px;}
+
+  .ticker{
+    background:var(--black-3);
+    border-bottom:1px solid var(--grey-dim);
+    overflow:hidden;
+    white-space:nowrap;
+    font-size:11px;
+    letter-spacing:1px;
+    padding:7px 0;
+  }
+  .ticker-track{
+    display:inline-block;
+    animation:scroll-left 26s linear infinite;
+  }
+  .ticker-track span{margin:0 26px; color:var(--grey);}
+  .ticker-track span b{color:var(--lime); font-weight:normal;}
+  @keyframes scroll-left{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){ .ticker-track{animation:none;} }
+  .topbar-mini{
+    display:flex;
+    justify-content:flex-end;
+    gap:16px;
+    padding:6px 22px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--grey);
+    background:var(--black);
+    border-bottom:1px solid var(--grey-dim);
+  }
+  .topbar-mini a:hover{color:var(--lime);}
+
+  header.topnav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:16px 22px;
+    background:var(--black);
+    border-bottom:2px solid var(--grey-dim);
+    flex-wrap:wrap;
+  }
+  .logo{
+    font-family:'Anton',sans-serif;
+    font-size:26px;
+    letter-spacing:1px;
+    color:var(--paper);
+    text-shadow:2px 2px 0 var(--wine), 4px 4px 0 var(--black);
+  }
+  .logo span{color:var(--blue-bright); text-shadow:2px 2px 0 var(--black);}
+  nav.mainnav{
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+  }
+  nav.mainnav a{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--grey);
+    position:relative;
+  }
+  nav.mainnav a .ic{font-size:15px;color:var(--paper);}
+  nav.mainnav a:hover{color:var(--lime);}
+  nav.mainnav a:hover .ic{color:var(--lime);}
+  nav.mainnav a.locked{cursor:pointer;}
+  nav.mainnav a.locked::after{
+    content:'hint: search a special date...';
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:var(--lime);
+    color:var(--black);
+    font-size:9px;
+    letter-spacing:0;
+    padding:4px 8px;
+    border-radius:4px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s;
+    z-index:100;
+    font-family:'Space Mono',monospace;
+    box-shadow:2px 2px 0 rgba(0,0,0,.5);
+  }
+  nav.mainnav a.locked:hover::after{opacity:1;}
+  .searchbar{
+    display:flex;
+    border:1px solid var(--grey-dim);
+    border-radius:999px;
+    overflow:hidden;
+    background:var(--black-2);
+    position:relative;
+  }
+  .searchbar input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--paper);
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    padding:9px 14px;
+    width:170px;
+  }
+  .searchbar button{
+    background:var(--wine);
+    border:none;
+    color:var(--paper);
+    padding:0 16px;
+    font-size:13px;
+  }
+  .searchbar.shake{animation:search-shake .4s;}
+  @keyframes search-shake{
+    0%,100%{transform:translateX(0);}
+    20%,60%{transform:translateX(-6px);}
+    40%,80%{transform:translateX(6px);}
+  }
+
+  .page{max-width:1180px; margin:0 auto; padding:22px;}
+
+  .layout-top{
+    display:grid;
+    grid-template-columns:200px 1fr 220px;
+    gap:18px;
+    align-items:start;
+  }
+  @media (max-width:900px){ .layout-top{grid-template-columns:1fr;} }
+
+  .quicklinks ul li a{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-bottom:1px dashed var(--grey-dim);
+    font-size:11px;
+    letter-spacing:.5px;
+    color:var(--paper);
+  }
+  .quicklinks ul li:last-child a{border-bottom:none;}
+  .quicklinks ul li a:hover{color:var(--lime);}
+  .note-widget{
+    margin-top:16px;
+    background:var(--black-3);
+    border:1px dashed var(--grey-dim);
+    padding:14px;
+    font-size:11px;
+    line-height:1.7;
+    color:var(--grey);
+  }
+  .note-widget b{color:var(--paper);}
+  .note-widget .sign{color:var(--wine-bright); display:block; margin-top:6px;}
+
+  .hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    align-items:center;
+  }
+  @media (max-width:700px){ .hero{grid-template-columns:1fr;} }
+  .hero-headline{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(38px,5.4vw,58px);
+    line-height:.95;
+    letter-spacing:1px;
+    background:linear-gradient(120deg, var(--blue-bright), var(--wine-bright));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:none;
+    filter:drop-shadow(3px 3px 0 rgba(0,0,0,.6));
+    margin-bottom:14px;
+  }
+  .hero-sub{
+    font-size:12px;
+    line-height:1.8;
+    color:var(--grey);
+    max-width:340px;
+    margin-bottom:20px;
+  }
+  .hero-btns{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+  .btn-solid{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--blue-bright) 70%, white 10%), var(--blue));
+    color:var(--paper);
+    border:none;
+    border-radius:999px;
+    padding:11px 22px;
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    box-shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+  .btn-solid.alt{background:transparent; border:1px solid var(--grey-dim); box-shadow:none;}
+  .btn-solid:hover{filter:brightness(1.12);}
+  .btn-solid.alt:hover{border-color:var(--lime); color:var(--lime);}
+  .hero-links{
+    display:flex; gap:14px;
+    font-size:10px; letter-spacing:1px; color:var(--grey);
+  }
+  .hero-links a:hover{color:var(--lime);}
+
+  .hero-photo-wrap{position:relative;}
+  .hero-photo{
+    aspect-ratio:4/5;
+    border-radius:0 0 6px 6px;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(62,134,181,.25), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(194,54,82,.25), transparent 55%),
+      var(--black-3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .float-chip{
+    position:absolute;
+    background:var(--black);
+    border:1px solid var(--grey-dim);
+    border-radius:6px;
+    padding:5px 10px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--lime);
+    box-shadow:3px 3px 0 rgba(0,0,0,.5);
+  }
+  .chip-cd{top:-14px; right:36px; border-radius:50%; width:46px; height:46px; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px;}
+  .chip-star{bottom:-10px; left:-10px; font-size:16px; padding:6px; color:var(--wine-bright);}
+  .chip-cursor{bottom:14px; right:-14px; font-size:18px; padding:2px 5px; background:transparent; border:none; box-shadow:none; color:var(--paper);}
+
+  .col-right .win{margin-bottom:14px;}
+  .msg-body{display:flex; align-items:center; gap:10px; font-size:11px;}
+  .msg-body .heart{font-size:20px; color:var(--wine-bright);}
+  .msg-body button{
+    margin-top:8px;
+    background:var(--blue);
+    border:none;
+    color:var(--paper);
+    font-size:10px;
+    letter-spacing:1px;
+    padding:6px 14px;
+  }
+  .np-track{display:flex; gap:10px; align-items:center; margin-bottom:10px;}
+  .np-thumb{
+    width:38px;height:38px;flex-shrink:0;
+    background:linear-gradient(135deg, var(--blue-bright), var(--wine-bright));
+  }
+  .np-info{font-size:10px; line-height:1.5;}
+  .np-info b{display:block; font-size:11px; color:var(--paper);}
+  .np-controls{display:flex; justify-content:center; gap:16px; font-size:14px; color:var(--paper); margin-top:6px;}
+  .np-controls span:hover{color:var(--lime); cursor:pointer;}
+  .np-bar{height:3px; background:var(--grey-dim); margin-top:10px; position:relative;}
+  .np-bar::after{content:''; position:absolute; left:0; top:0; bottom:0; width:38%; background:var(--wine-bright);}
+
+  .sticky-note{
+    background:var(--lime);
+    color:var(--black);
+    padding:14px;
+    font-size:10px;
+    line-height:1.9;
+    letter-spacing:.3px;
+    transform:rotate(1.2deg);
+    box-shadow:4px 4px 0 rgba(0,0,0,.5);
+  }
+  .sticky-note b{display:block; margin-bottom:4px; font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px;}
+
+  .promo-strip{
+    margin-top:26px;
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:14px;
+    align-items:stretch;
+  }
+  @media (max-width:700px){ .promo-strip{grid-template-columns:1fr;} }
+  .promo-item{
+    background:var(--black-2);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px;
+  }
+  .promo-item .ic{font-size:20px; color:var(--blue-bright);}
+  .promo-item .tt{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px;}
+  .promo-item .sm{font-size:9px; color:var(--grey);}
+  .join-box{
+    background:var(--black-2);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    padding:14px 16px;
+  }
+  .join-box .tt{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px; margin-bottom:2px;}
+  .join-box .sm{font-size:9px; color:var(--grey); margin-bottom:10px;}
+  .join-row{display:flex; border-radius:999px; overflow:hidden;}
+  .join-row input{
+    flex:1; background:var(--black); border:1px solid var(--grey-dim); border-right:none;
+    color:var(--paper); font-family:'Space Mono',monospace; font-size:10px; padding:9px 14px;
+  }
+  .join-row button{background:var(--wine); border:none; color:var(--paper); font-size:10px; letter-spacing:1px; padding:0 18px;}
+
+  .grid-3{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  @media (max-width:900px){ .grid-3{grid-template-columns:1fr;} }
+
+  .drop-card{display:grid; grid-template-columns:56px 1fr; gap:10px; padding:10px 0; border-bottom:1px dashed var(--grey-dim); align-items:center;}
+  .drop-card:last-child{border-bottom:none;}
+  .drop-thumb{aspect-ratio:1/1; border-radius:6px; background:linear-gradient(155deg, var(--tile-a), var(--tile-b));}
+  .drop-name{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px;}
+  .drop-sub{font-size:9px; color:var(--grey); margin:2px 0 6px;}
+  .drop-card button{
+    background:transparent; border:1px solid var(--grey-dim); color:var(--paper);
+    border-radius:999px;
+    font-size:9px; letter-spacing:1px; padding:4px 12px;
+  }
+  .drop-card button:hover{border-color:var(--lime); color:var(--lime);}
+
+  .block-photos{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px;}
+  .block-photo{aspect-ratio:1/1; border-radius:6px; background:var(--black-3); border:1px solid var(--grey-dim); display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--grey-dim);}
+  .block-tag{font-size:10px; color:var(--grey); margin-bottom:10px;}
+  .block-tag b{color:var(--lime);}
+  .upload-btn{width:100%; border-radius:999px; background:linear-gradient(180deg, color-mix(in srgb, var(--blue-bright) 70%, white 10%), var(--blue)); border:none; color:var(--paper); font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; padding:9px; box-shadow:0 3px 0 rgba(0,0,0,.4);}
+  .upload-btn:hover{filter:brightness(1.12);}
+
+  .pl-row{display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--grey-dim); font-size:10px;}
+  .pl-row:last-child{border-bottom:none;}
+  .pl-row .n{color:var(--grey); width:16px;}
+  .pl-row .t{flex:1;}
+  .pl-row .d{color:var(--grey);}
+  .pl-row.now{color:var(--lime);}
+  .pl-row.now .n{color:var(--lime);}
+
+  .socials-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+  .social-btn{
+    display:flex; align-items:center; gap:8px; padding:10px 12px;
+    background:var(--black-3); border:1px solid var(--grey-dim); border-radius:6px;
+    font-size:10px; letter-spacing:1px; color:var(--paper);
+  }
+  .social-btn:hover{border-color:var(--lime); color:var(--lime);}
+  .social-btn .ic{font-size:14px;}
+
+  .grid-blog{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1.3fr 1fr;
+    gap:16px;
+    align-items:stretch;
+  }
+  @media (max-width:900px){ .grid-blog{grid-template-columns:1fr;} }
+  .blog-list li{padding:8px 0; border-bottom:1px dashed var(--grey-dim); font-size:11px;}
+  .blog-list li:last-child{border-bottom:none;}
+  .blog-list li a:hover{color:var(--lime);}
+  .blog-list .tag{display:block; font-size:9px; color:var(--wine-bright); margin-bottom:2px; letter-spacing:1px;}
+
+  .welcome-banner{
+    background:
+      radial-gradient(circle at 30% 20%, rgba(62,134,181,.35), transparent 55%),
+      radial-gradient(circle at 75% 80%, rgba(194,54,82,.35), transparent 55%),
+      var(--black-3);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px 20px;
+  }
+  .welcome-banner h3{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(24px,3.4vw,34px);
+    letter-spacing:1px;
+    line-height:1.05;
+    margin-bottom:8px;
+    text-shadow:2px 2px 0 var(--wine), 4px 4px 0 var(--black);
+  }
+  .welcome-banner p{font-size:11px; color:var(--grey); max-width:300px; margin-bottom:16px;}
+  .welcome-banner button{
+    background:var(--lime); color:var(--black); border:none; border-radius:999px;
+    font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; padding:10px 24px;
+    box-shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+  .welcome-banner button:hover{filter:brightness(1.08);}
+
+  .faves-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--grey-dim); font-size:11px;}
+  .faves-row:last-child{border-bottom:none;}
+  .faves-row .ic{color:var(--wine-bright); margin-right:6px;}
+  .faves-row .count{color:var(--lime);}
+
+  .footer-ticker{
+    margin-top:26px;
+    background:var(--wine);
+    color:var(--paper);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:8px 0;
+    font-size:10px;
+    letter-spacing:2px;
+  }
+  .footer-ticker .ticker-track{animation-duration:20s;}
+
+  .site-footer{
+    background:var(--black);
+    border-top:2px solid var(--grey-dim);
+    padding:34px 22px 20px;
+  }
+  .footer-grid{
+    max-width:1180px; margin:0 auto;
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;
+    gap:24px;
+  }
+  @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
+  .footer-col h4{font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; margin-bottom:12px; color:var(--grey);}
+  .footer-col li{margin-bottom:8px; font-size:11px;}
+  .footer-col li a:hover{color:var(--lime);}
+  .footer-brand .logo{font-size:20px; margin-bottom:8px;}
+  .footer-brand p{font-size:10px; color:var(--grey); line-height:1.7;}
+  .social-row{display:flex; gap:10px; margin-top:10px;}
+  .social-row a{
+    width:28px;height:28px; border:1px solid var(--grey-dim);
+    display:flex; align-items:center; justify-content:center; font-size:12px;
+  }
+  .social-row a:hover{border-color:var(--lime); color:var(--lime);}
+
+  .taskbar{
+    position:fixed; left:0; right:0; bottom:0;
+    height:34px;
+    background:var(--black-3);
+    border-top:2px solid var(--grey-dim);
+    display:flex;
+    align-items:center;
+    padding:0 8px;
+    gap:8px;
+    z-index:50;
+  }
+  .start-btn{
+    display:flex; align-items:center; gap:6px;
+    background:var(--wine);
+    border:none; color:var(--paper);
+    border-radius:4px;
+    font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px;
+    padding:5px 12px; height:26px;
+  }
+  .tab-pill{
+    display:flex; align-items:center; gap:6px;
+    background:var(--black-2); border:1px solid var(--grey-dim);
+    border-radius:4px;
+    font-size:10px; color:var(--grey); padding:4px 10px; height:26px;
+  }
+  .tray{
+    margin-left:auto;
+    display:flex; align-items:center; gap:12px;
+    font-size:11px; color:var(--grey);
+  }
+  #clock{color:var(--paper); font-size:10px; letter-spacing:.5px;}
+
+  .member-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;}
+  .member-card{display:block;border:1px solid var(--grey-dim);background:var(--black-3);padding:8px;transition:transform .2s,border-color .2s;}
+  .member-card:hover{transform:translateY(-3px);border-color:var(--blue-bright);}
+  .member-photo{aspect-ratio:3/4;background:var(--black-2);overflow:hidden;}
+  .member-photo img{width:100%;height:100%;object-fit:cover;}
+  .member-name{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;padding:9px 4px 4px;}
+  @media (max-width:800px){.member-grid{grid-template-columns:1fr 1fr}}
+
+  .album-modal{display:none;position:fixed;inset:0;background:rgba(11,11,12,.94);z-index:100;overflow:auto;padding:30px 20px;}
+  .album-modal.open{display:block;}
+  .album-modal-inner{max-width:1000px;margin:0 auto;background:var(--black-2);border:1px solid var(--grey-dim);box-shadow:8px 8px 0 rgba(0,0,0,.5);position:relative;}
+  .album-close{position:absolute;right:10px;top:10px;z-index:2;background:var(--wine);border:1px solid var(--grey-dim);color:var(--paper);padding:6px 9px;cursor:pointer;}
+  .album-detail-grid{display:grid;grid-template-columns:38% 62%;gap:20px;padding:22px;}
+  .album-cover{aspect-ratio:1/1;background:var(--black-3);border:1px solid var(--grey-dim);overflow:hidden;}
+  .album-cover img{width:100%;height:100%;object-fit:cover;}
+  .album-detail-title{font-family:'Anton',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:14px;}
+  .album-track{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--grey-dim);font-size:10px;cursor:pointer;}
+  .album-track:hover{color:var(--lime);}
+  .album-song-link{display:none;margin-top:14px;padding:12px;background:var(--black-3);border:1px solid var(--grey-dim);font-size:10px;}
+  .album-song-link a{color:var(--blue-bright);}
+  @media(max-width:700px){.album-detail-grid{grid-template-columns:1fr;}}
+
+  .vote-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .vote-option{display:flex;align-items:center;gap:9px;padding:11px 9px;border-bottom:1px dashed var(--grey-dim);cursor:pointer;font-size:11px;}
+  .vote-option:hover{background:var(--black-3);}
+  .vote-option input{accent-color:var(--blue-bright);}
+  .vote-results{border:1px solid var(--grey-dim);padding:14px;background:var(--black-3);}
+  .vote-results>b{font-family:'Anton',sans-serif;letter-spacing:1px;font-size:12px;}
+  .result-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--grey-dim);font-size:10px;}
+  .result-row strong{font-family:'Anton',sans-serif;font-size:14px;}
+  .member-page-inner{max-width:1100px;}
+  .member-page-grid{display:grid;grid-template-columns:40% 60%;min-height:600px;}
+  .member-page-image{background:var(--black-3);min-height:600px;}
+  .member-page-image img{width:100%;height:100%;object-fit:cover;display:block;}
+  .member-page-copy{padding:26px;}
+  .member-page-copy h1{font-family:'Anton',sans-serif;font-size:40px;letter-spacing:1px;margin-bottom:6px;}
+  .member-page-copy h3{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;color:var(--blue-bright);margin:20px 0 6px;}
+  .member-page-copy p{font-size:11px;line-height:1.7;color:var(--paper);}
+  .member-page-copy ul{margin-top:6px;}
+  .member-page-copy ul li{font-size:11px;line-height:1.8;color:var(--paper);padding-left:14px;position:relative;}
+  .member-page-copy ul li::before{content:'·';position:absolute;left:4px;color:var(--lime);font-weight:bold;}
+  .member-page-copy .member-meta{font-size:11px;color:var(--grey);line-height:1.9;margin-top:6px;}
+  .member-page-copy .member-meta b{color:var(--paper);}
+  @media(max-width:700px){.vote-layout,.member-page-grid{grid-template-columns:1fr}.member-page-image{min-height:400px}.member-page-copy h1{font-size:30px;}}
+
+  /* ============ UNLOCK TOAST ============ */
+  .unlock-toast{
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(.9);
+    background:var(--black);
+    border:2px solid var(--lime);
+    border-radius:8px;
+    padding:20px 32px;
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    letter-spacing:2px;
+    color:var(--lime);
+    text-shadow:2px 2px 0 var(--wine);
+    box-shadow:0 0 0 4px rgba(198,255,61,.15), 0 0 40px rgba(198,255,61,.5);
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s, transform .3s;
+  }
+  .unlock-toast.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+
+  /* ============ GAME MODAL ============ */
+  .game-modal{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(11,11,12,.94);
+    z-index:150;
+    overflow:auto;
+    padding:30px 20px;
+    align-items:center;
+    justify-content:center;
+  }
+  .game-modal.open{display:flex;}
+  .game-window{
+    max-width:560px;
+    width:100%;
+    background:var(--black-2);
+    border:2px solid var(--grey-dim);
+    box-shadow:8px 8px 0 rgba(0,0,0,.6), 0 0 0 1px rgba(232,226,209,.1) inset;
+    border-radius:6px;
+    overflow:hidden;
+    position:relative;
+  }
+  .game-window-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:7px 8px 7px 12px;
+    background:linear-gradient(180deg, var(--lime), color-mix(in srgb, var(--lime) 55%, black));
+    border-bottom:1px solid rgba(0,0,0,.4);
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--black);
+    text-shadow:1px 1px 0 rgba(255,255,255,.2);
+  }
+  .game-window-bar .left{display:flex; align-items:center; gap:6px;}
+  .game-close-btn{
+    background:var(--wine);
+    border:1px solid rgba(0,0,0,.4);
+    color:var(--paper);
+    font-family:'Anton',sans-serif;
+    padding:3px 9px;
+    font-size:11px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .game-close-btn:hover{filter:brightness(1.15);}
+
+  .game-info{
+LÀM HẾT LẠI CHO T
+Complete Modified File
+
+Here is the complete modified file with ONLY the additions you requested:
+
+✅ Existing website code: 100% untouched
+✅ Existing "CATCH_THE_SHOT" game: preserved (accessible via search easter egg)
+✅ NEW: "4SHO: THE LOST FILE" game modal
+✅ NEW: "4shoville" merch code trigger (case-insensitive)
+✅ Smallest possible change to merch code handler
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -662,3 +1345,1678 @@
   }
   .game-info .score-val{color:var(--lime); font-family:'Anton',sans-serif; font-size:16px; margin-left:6px;}
   .game-info .timer-val{color:var(--wine-bright); font-family:'Anton',sans-serif;
+
+!DOCTYPE html.txt
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LNGSHOT4SHO — home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0b0b0c;
+    --black-2:#141416;
+    --black-3:#1b1b1e;
+    --wine:#5c1622;
+    --wine-bright:#c23652;
+    --blue:#1f3f57;
+    --blue-bright:#3e86b5;
+    --lime:#c6ff3d;
+    --paper:#e8e2d1;
+    --grey:#8d8a83;
+    --grey-dim:#3a3834;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Mono',monospace;
+    background:var(--black);
+    color:var(--paper);
+    padding-bottom:34px;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+
+  .win{
+    border:1px solid var(--grey-dim);
+    border-radius:7px;
+    overflow:hidden;
+    background:var(--black-2);
+    box-shadow:6px 6px 0 rgba(0,0,0,.55);
+  }
+  .win-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:7px 8px 7px 12px;
+    background:linear-gradient(180deg, var(--accent, var(--wine)), color-mix(in srgb, var(--accent, var(--wine)) 55%, black));
+    border-bottom:1px solid rgba(0,0,0,.4);
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--paper);
+    text-shadow:1px 1px 0 rgba(0,0,0,.4);
+  }
+  .win-bar .win-name{display:flex;align-items:center;gap:6px;}
+  .win-dots{display:flex;gap:4px;}
+  .win-dots span{
+    width:15px;height:14px;
+    border:1px solid rgba(232,226,209,.6);
+    border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:8px;
+    line-height:1;
+    color:var(--paper);
+    background:rgba(0,0,0,.15);
+  }
+  .win-body{padding:16px;}
+
+  .ticker{
+    background:var(--black-3);
+    border-bottom:1px solid var(--grey-dim);
+    overflow:hidden;
+    white-space:nowrap;
+    font-size:11px;
+    letter-spacing:1px;
+    padding:7px 0;
+  }
+  .ticker-track{
+    display:inline-block;
+    animation:scroll-left 26s linear infinite;
+  }
+  .ticker-track span{margin:0 26px; color:var(--grey);}
+  .ticker-track span b{color:var(--lime); font-weight:normal;}
+  @keyframes scroll-left{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){ .ticker-track{animation:none;} }
+  .topbar-mini{
+    display:flex;
+    justify-content:flex-end;
+    gap:16px;
+    padding:6px 22px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--grey);
+    background:var(--black);
+    border-bottom:1px solid var(--grey-dim);
+  }
+  .topbar-mini a:hover{color:var(--lime);}
+
+  header.topnav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:16px 22px;
+    background:var(--black);
+    border-bottom:2px solid var(--grey-dim);
+    flex-wrap:wrap;
+  }
+  .logo{
+    font-family:'Anton',sans-serif;
+    font-size:26px;
+    letter-spacing:1px;
+    color:var(--paper);
+    text-shadow:2px 2px 0 var(--wine), 4px 4px 0 var(--black);
+  }
+  .logo span{color:var(--blue-bright); text-shadow:2px 2px 0 var(--black);}
+  nav.mainnav{
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+  }
+  nav.mainnav a{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--grey);
+    position:relative;
+  }
+  nav.mainnav a .ic{font-size:15px;color:var(--paper);}
+  nav.mainnav a:hover{color:var(--lime);}
+  nav.mainnav a:hover .ic{color:var(--lime);}
+  nav.mainnav a.locked{cursor:pointer;}
+  nav.mainnav a.locked::after{
+    content:'hint: search a special date...';
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:var(--lime);
+    color:var(--black);
+    font-size:9px;
+    letter-spacing:0;
+    padding:4px 8px;
+    border-radius:4px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s;
+    z-index:100;
+    font-family:'Space Mono',monospace;
+    box-shadow:2px 2px 0 rgba(0,0,0,.5);
+  }
+  nav.mainnav a.locked:hover::after{opacity:1;}
+  .searchbar{
+    display:flex;
+    border:1px solid var(--grey-dim);
+    border-radius:999px;
+    overflow:hidden;
+    background:var(--black-2);
+    position:relative;
+  }
+  .searchbar input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--paper);
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    padding:9px 14px;
+    width:170px;
+  }
+  .searchbar button{
+    background:var(--wine);
+    border:none;
+    color:var(--paper);
+    padding:0 16px;
+    font-size:13px;
+  }
+  .searchbar.shake{animation:search-shake .4s;}
+  @keyframes search-shake{
+    0%,100%{transform:translateX(0);}
+    20%,60%{transform:translateX(-6px);}
+    40%,80%{transform:translateX(6px);}
+  }
+
+  .page{max-width:1180px; margin:0 auto; padding:22px;}
+
+  .layout-top{
+    display:grid;
+    grid-template-columns:200px 1fr 220px;
+    gap:18px;
+    align-items:start;
+  }
+  @media (max-width:900px){ .layout-top{grid-template-columns:1fr;} }
+
+  .quicklinks ul li a{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-bottom:1px dashed var(--grey-dim);
+    font-size:11px;
+    letter-spacing:.5px;
+    color:var(--paper);
+  }
+  .quicklinks ul li:last-child a{border-bottom:none;}
+  .quicklinks ul li a:hover{color:var(--lime);}
+  .note-widget{
+    margin-top:16px;
+    background:var(--black-3);
+    border:1px dashed var(--grey-dim);
+    padding:14px;
+    font-size:11px;
+    line-height:1.7;
+    color:var(--grey);
+  }
+  .note-widget b{color:var(--paper);}
+  .note-widget .sign{color:var(--wine-bright); display:block; margin-top:6px;}
+
+  .hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    align-items:center;
+  }
+  @media (max-width:700px){ .hero{grid-template-columns:1fr;} }
+  .hero-headline{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(38px,5.4vw,58px);
+    line-height:.95;
+    letter-spacing:1px;
+    background:linear-gradient(120deg, var(--blue-bright), var(--wine-bright));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:none;
+    filter:drop-shadow(3px 3px 0 rgba(0,0,0,.6));
+    margin-bottom:14px;
+  }
+  .hero-sub{
+    font-size:12px;
+    line-height:1.8;
+    color:var(--grey);
+    max-width:340px;
+    margin-bottom:20px;
+  }
+  .hero-btns{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+  .btn-solid{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--blue-bright) 70%, white 10%), var(--blue));
+    color:var(--paper);
+    border:none;
+    border-radius:999px;
+    padding:11px 22px;
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    box-shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+  .btn-solid.alt{background:transparent; border:1px solid var(--grey-dim); box-shadow:none;}
+  .btn-solid:hover{filter:brightness(1.12);}
+  .btn-solid.alt:hover{border-color:var(--lime); color:var(--lime);}
+  .hero-links{
+    display:flex; gap:14px;
+    font-size:10px; letter-spacing:1px; color:var(--grey);
+  }
+  .hero-links a:hover{color:var(--lime);}
+
+  .hero-photo-wrap{position:relative;}
+  .hero-photo{
+    aspect-ratio:4/5;
+    border-radius:0 0 6px 6px;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(62,134,181,.25), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(194,54,82,.25), transparent 55%),
+      var(--black-3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .float-chip{
+    position:absolute;
+    background:var(--black);
+    border:1px solid var(--grey-dim);
+    border-radius:6px;
+    padding:5px 10px;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--lime);
+    box-shadow:3px 3px 0 rgba(0,0,0,.5);
+  }
+  .chip-cd{top:-14px; right:36px; border-radius:50%; width:46px; height:46px; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px;}
+  .chip-star{bottom:-10px; left:-10px; font-size:16px; padding:6px; color:var(--wine-bright);}
+  .chip-cursor{bottom:14px; right:-14px; font-size:18px; padding:2px 5px; background:transparent; border:none; box-shadow:none; color:var(--paper);}
+
+  .col-right .win{margin-bottom:14px;}
+  .msg-body{display:flex; align-items:center; gap:10px; font-size:11px;}
+  .msg-body .heart{font-size:20px; color:var(--wine-bright);}
+  .msg-body button{
+    margin-top:8px;
+    background:var(--blue);
+    border:none;
+    color:var(--paper);
+    font-size:10px;
+    letter-spacing:1px;
+    padding:6px 14px;
+  }
+  .np-track{display:flex; gap:10px; align-items:center; margin-bottom:10px;}
+  .np-thumb{
+    width:38px;height:38px;flex-shrink:0;
+    background:linear-gradient(135deg, var(--blue-bright), var(--wine-bright));
+  }
+  .np-info{font-size:10px; line-height:1.5;}
+  .np-info b{display:block; font-size:11px; color:var(--paper);}
+  .np-controls{display:flex; justify-content:center; gap:16px; font-size:14px; color:var(--paper); margin-top:6px;}
+  .np-controls span:hover{color:var(--lime); cursor:pointer;}
+  .np-bar{height:3px; background:var(--grey-dim); margin-top:10px; position:relative;}
+  .np-bar::after{content:''; position:absolute; left:0; top:0; bottom:0; width:38%; background:var(--wine-bright);}
+
+  .sticky-note{
+    background:var(--lime);
+    color:var(--black);
+    padding:14px;
+    font-size:10px;
+    line-height:1.9;
+    letter-spacing:.3px;
+    transform:rotate(1.2deg);
+    box-shadow:4px 4px 0 rgba(0,0,0,.5);
+  }
+  .sticky-note b{display:block; margin-bottom:4px; font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px;}
+
+  .promo-strip{
+    margin-top:26px;
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:14px;
+    align-items:stretch;
+  }
+  @media (max-width:700px){ .promo-strip{grid-template-columns:1fr;} }
+  .promo-item{
+    background:var(--black-2);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px;
+  }
+  .promo-item .ic{font-size:20px; color:var(--blue-bright);}
+  .promo-item .tt{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px;}
+  .promo-item .sm{font-size:9px; color:var(--grey);}
+  .join-box{
+    background:var(--black-2);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    padding:14px 16px;
+  }
+  .join-box .tt{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px; margin-bottom:2px;}
+  .join-box .sm{font-size:9px; color:var(--grey); margin-bottom:10px;}
+  .join-row{display:flex; border-radius:999px; overflow:hidden;}
+  .join-row input{
+    flex:1; background:var(--black); border:1px solid var(--grey-dim); border-right:none;
+    color:var(--paper); font-family:'Space Mono',monospace; font-size:10px; padding:9px 14px;
+  }
+  .join-row button{background:var(--wine); border:none; color:var(--paper); font-size:10px; letter-spacing:1px; padding:0 18px;}
+
+  .grid-3{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  @media (max-width:900px){ .grid-3{grid-template-columns:1fr;} }
+
+  .drop-card{display:grid; grid-template-columns:56px 1fr; gap:10px; padding:10px 0; border-bottom:1px dashed var(--grey-dim); align-items:center;}
+  .drop-card:last-child{border-bottom:none;}
+  .drop-thumb{aspect-ratio:1/1; border-radius:6px; background:linear-gradient(155deg, var(--tile-a), var(--tile-b));}
+  .drop-name{font-family:'Anton',sans-serif; font-size:12px; letter-spacing:.5px;}
+  .drop-sub{font-size:9px; color:var(--grey); margin:2px 0 6px;}
+  .drop-card button{
+    background:transparent; border:1px solid var(--grey-dim); color:var(--paper);
+    border-radius:999px;
+    font-size:9px; letter-spacing:1px; padding:4px 12px;
+  }
+  .drop-card button:hover{border-color:var(--lime); color:var(--lime);}
+
+  .block-photos{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px;}
+  .block-photo{aspect-ratio:1/1; border-radius:6px; background:var(--black-3); border:1px solid var(--grey-dim); display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--grey-dim);}
+  .block-tag{font-size:10px; color:var(--grey); margin-bottom:10px;}
+  .block-tag b{color:var(--lime);}
+  .upload-btn{width:100%; border-radius:999px; background:linear-gradient(180deg, color-mix(in srgb, var(--blue-bright) 70%, white 10%), var(--blue)); border:none; color:var(--paper); font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; padding:9px; box-shadow:0 3px 0 rgba(0,0,0,.4);}
+  .upload-btn:hover{filter:brightness(1.12);}
+
+  .pl-row{display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--grey-dim); font-size:10px;}
+  .pl-row:last-child{border-bottom:none;}
+  .pl-row .n{color:var(--grey); width:16px;}
+  .pl-row .t{flex:1;}
+  .pl-row .d{color:var(--grey);}
+  .pl-row.now{color:var(--lime);}
+  .pl-row.now .n{color:var(--lime);}
+
+  .socials-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+  .social-btn{
+    display:flex; align-items:center; gap:8px; padding:10px 12px;
+    background:var(--black-3); border:1px solid var(--grey-dim); border-radius:6px;
+    font-size:10px; letter-spacing:1px; color:var(--paper);
+  }
+  .social-btn:hover{border-color:var(--lime); color:var(--lime);}
+  .social-btn .ic{font-size:14px;}
+
+  .grid-blog{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1.3fr 1fr;
+    gap:16px;
+    align-items:stretch;
+  }
+  @media (max-width:900px){ .grid-blog{grid-template-columns:1fr;} }
+  .blog-list li{padding:8px 0; border-bottom:1px dashed var(--grey-dim); font-size:11px;}
+  .blog-list li:last-child{border-bottom:none;}
+  .blog-list li a:hover{color:var(--lime);}
+  .blog-list .tag{display:block; font-size:9px; color:var(--wine-bright); margin-bottom:2px; letter-spacing:1px;}
+
+  .welcome-banner{
+    background:
+      radial-gradient(circle at 30% 20%, rgba(62,134,181,.35), transparent 55%),
+      radial-gradient(circle at 75% 80%, rgba(194,54,82,.35), transparent 55%),
+      var(--black-3);
+    border:1px solid var(--grey-dim);
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px 20px;
+  }
+  .welcome-banner h3{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(24px,3.4vw,34px);
+    letter-spacing:1px;
+    line-height:1.05;
+    margin-bottom:8px;
+    text-shadow:2px 2px 0 var(--wine), 4px 4px 0 var(--black);
+  }
+  .welcome-banner p{font-size:11px; color:var(--grey); max-width:300px; margin-bottom:16px;}
+  .welcome-banner button{
+    background:var(--lime); color:var(--black); border:none; border-radius:999px;
+    font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; padding:10px 24px;
+    box-shadow:0 3px 0 rgba(0,0,0,.4);
+  }
+  .welcome-banner button:hover{filter:brightness(1.08);}
+
+  .faves-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--grey-dim); font-size:11px;}
+  .faves-row:last-child{border-bottom:none;}
+  .faves-row .ic{color:var(--wine-bright); margin-right:6px;}
+  .faves-row .count{color:var(--lime);}
+
+  .footer-ticker{
+    margin-top:26px;
+    background:var(--wine);
+    color:var(--paper);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:8px 0;
+    font-size:10px;
+    letter-spacing:2px;
+  }
+  .footer-ticker .ticker-track{animation-duration:20s;}
+
+  .site-footer{
+    background:var(--black);
+    border-top:2px solid var(--grey-dim);
+    padding:34px 22px 20px;
+  }
+  .footer-grid{
+    max-width:1180px; margin:0 auto;
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;
+    gap:24px;
+  }
+  @media (max-width:800px){ .footer-grid{grid-template-columns:1fr 1fr;} }
+  .footer-col h4{font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; margin-bottom:12px; color:var(--grey);}
+  .footer-col li{margin-bottom:8px; font-size:11px;}
+  .footer-col li a:hover{color:var(--lime);}
+  .footer-brand .logo{font-size:20px; margin-bottom:8px;}
+  .footer-brand p{font-size:10px; color:var(--grey); line-height:1.7;}
+  .social-row{display:flex; gap:10px; margin-top:10px;}
+  .social-row a{
+    width:28px;height:28px; border:1px solid var(--grey-dim);
+    display:flex; align-items:center; justify-content:center; font-size:12px;
+  }
+  .social-row a:hover{border-color:var(--lime); color:var(--lime);}
+
+  .taskbar{
+    position:fixed; left:0; right:0; bottom:0;
+    height:34px;
+    background:var(--black-3);
+    border-top:2px solid var(--grey-dim);
+    display:flex;
+    align-items:center;
+    padding:0 8px;
+    gap:8px;
+    z-index:50;
+  }
+  .start-btn{
+    display:flex; align-items:center; gap:6px;
+    background:var(--wine);
+    border:none; color:var(--paper);
+    border-radius:4px;
+    font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px;
+    padding:5px 12px; height:26px;
+  }
+  .tab-pill{
+    display:flex; align-items:center; gap:6px;
+    background:var(--black-2); border:1px solid var(--grey-dim);
+    border-radius:4px;
+    font-size:10px; color:var(--grey); padding:4px 10px; height:26px;
+  }
+  .tray{
+    margin-left:auto;
+    display:flex; align-items:center; gap:12px;
+    font-size:11px; color:var(--grey);
+  }
+  #clock{color:var(--paper); font-size:10px; letter-spacing:.5px;}
+
+  .member-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;}
+  .member-card{display:block;border:1px solid var(--grey-dim);background:var(--black-3);padding:8px;transition:transform .2s,border-color .2s;}
+  .member-card:hover{transform:translateY(-3px);border-color:var(--blue-bright);}
+  .member-photo{aspect-ratio:3/4;background:var(--black-2);overflow:hidden;}
+  .member-photo img{width:100%;height:100%;object-fit:cover;}
+  .member-name{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;padding:9px 4px 4px;}
+  @media (max-width:800px){.member-grid{grid-template-columns:1fr 1fr}}
+
+  .album-modal{display:none;position:fixed;inset:0;background:rgba(11,11,12,.94);z-index:100;overflow:auto;padding:30px 20px;}
+  .album-modal.open{display:block;}
+  .album-modal-inner{max-width:1000px;margin:0 auto;background:var(--black-2);border:1px solid var(--grey-dim);box-shadow:8px 8px 0 rgba(0,0,0,.5);position:relative;}
+  .album-close{position:absolute;right:10px;top:10px;z-index:2;background:var(--wine);border:1px solid var(--grey-dim);color:var(--paper);padding:6px 9px;cursor:pointer;}
+  .album-detail-grid{display:grid;grid-template-columns:38% 62%;gap:20px;padding:22px;}
+  .album-cover{aspect-ratio:1/1;background:var(--black-3);border:1px solid var(--grey-dim);overflow:hidden;}
+  .album-cover img{width:100%;height:100%;object-fit:cover;}
+  .album-detail-title{font-family:'Anton',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:14px;}
+  .album-track{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--grey-dim);font-size:10px;cursor:pointer;}
+  .album-track:hover{color:var(--lime);}
+  .album-song-link{display:none;margin-top:14px;padding:12px;background:var(--black-3);border:1px solid var(--grey-dim);font-size:10px;}
+  .album-song-link a{color:var(--blue-bright);}
+  @media(max-width:700px){.album-detail-grid{grid-template-columns:1fr;}}
+
+  .vote-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .vote-option{display:flex;align-items:center;gap:9px;padding:11px 9px;border-bottom:1px dashed var(--grey-dim);cursor:pointer;font-size:11px;}
+  .vote-option:hover{background:var(--black-3);}
+  .vote-option input{accent-color:var(--blue-bright);}
+  .vote-results{border:1px solid var(--grey-dim);padding:14px;background:var(--black-3);}
+  .vote-results>b{font-family:'Anton',sans-serif;letter-spacing:1px;font-size:12px;}
+  .result-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--grey-dim);font-size:10px;}
+  .result-row strong{font-family:'Anton',sans-serif;font-size:14px;}
+  .member-page-inner{max-width:1100px;}
+  .member-page-grid{display:grid;grid-template-columns:40% 60%;min-height:600px;}
+  .member-page-image{background:var(--black-3);min-height:600px;}
+  .member-page-image img{width:100%;height:100%;object-fit:cover;display:block;}
+  .member-page-copy{padding:26px;}
+  .member-page-copy h1{font-family:'Anton',sans-serif;font-size:40px;letter-spacing:1px;margin-bottom:6px;}
+  .member-page-copy h3{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:1px;color:var(--blue-bright);margin:20px 0 6px;}
+  .member-page-copy p{font-size:11px;line-height:1.7;color:var(--paper);}
+  .member-page-copy ul{margin-top:6px;}
+  .member-page-copy ul li{font-size:11px;line-height:1.8;color:var(--paper);padding-left:14px;position:relative;}
+  .member-page-copy ul li::before{content:'·';position:absolute;left:4px;color:var(--lime);font-weight:bold;}
+  .member-page-copy .member-meta{font-size:11px;color:var(--grey);line-height:1.9;margin-top:6px;}
+  .member-page-copy .member-meta b{color:var(--paper);}
+  @media(max-width:700px){.vote-layout,.member-page-grid{grid-template-columns:1fr}.member-page-image{min-height:400px}.member-page-copy h1{font-size:30px;}}
+
+  /* ============ UNLOCK TOAST ============ */
+  .unlock-toast{
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(.9);
+    background:var(--black);
+    border:2px solid var(--lime);
+    border-radius:8px;
+    padding:20px 32px;
+    font-family:'Anton',sans-serif;
+    font-size:22px;
+    letter-spacing:2px;
+    color:var(--lime);
+    text-shadow:2px 2px 0 var(--wine);
+    box-shadow:0 0 0 4px rgba(198,255,61,.15), 0 0 40px rgba(198,255,61,.5);
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s, transform .3s;
+  }
+  .unlock-toast.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+
+  /* ============ GAME MODAL ============ */
+  .game-modal{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(11,11,12,.94);
+    z-index:150;
+    overflow:auto;
+    padding:30px 20px;
+    align-items:center;
+    justify-content:center;
+  }
+  .game-modal.open{display:flex;}
+  .game-window{
+    max-width:560px;
+    width:100%;
+    background:var(--black-2);
+    border:2px solid var(--grey-dim);
+    box-shadow:8px 8px 0 rgba(0,0,0,.6), 0 0 0 1px rgba(232,226,209,.1) inset;
+    border-radius:6px;
+    overflow:hidden;
+    position:relative;
+  }
+  .game-window-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:7px 8px 7px 12px;
+    background:linear-gradient(180deg, var(--lime), color-mix(in srgb, var(--lime) 55%, black));
+    border-bottom:1px solid rgba(0,0,0,.4);
+    font-family:'Anton',sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--black);
+    text-shadow:1px 1px 0 rgba(255,255,255,.2);
+  }
+  .game-window-bar .left{display:flex; align-items:center; gap:6px;}
+  .game-close-btn{
+    background:var(--wine);
+    border:1px solid rgba(0,0,0,.4);
+    color:var(--paper);
+    font-family:'Anton',sans-serif;
+    padding:3px 9px;
+    font-size:11px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .game-close-btn:hover{filter:brightness(1.15);}
+
+  .game-info{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px;
+    background:var(--black-3);
+    border-bottom:1px solid var(--grey-dim);
+    font-size:11px;
+    letter-spacing:1px;
+    color:var(--paper);
+  }
+  .game-info .score-val{color:var(--lime); font-family:'Anton',sans-serif; font-size:16px; margin-left:6px;}
+  .game-info .timer-val{color:var(--wine-bright); font-family:'Anton',sans-serif; font-size:16px; margin-left:6px;}
+  .game-info .best-val{color:var(--blue-bright); font-family:'Anton',sans-serif; font-size:14px; margin-left:6px;}
+
+  #gameStage{
+    position:relative;
+    width:100%;
+    height:400px;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(62,134,181,.18), transparent 55%),
+      radial-gradient(circle at 80% 70%, rgba(194,54,82,.18), transparent 55%),
+      var(--black);
+    overflow:hidden;
+    cursor:crosshair;
+    touch-action:manipulation;
+  }
+  #gameStage::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(198,255,61,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(198,255,61,.06) 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+  }
+  .falling-item{
+    position:absolute;
+    font-size:30px;
+    line-height:1;
+    user-select:none;
+    will-change:transform;
+    transition:transform .05s linear;
+  }
+  .falling-item.good{filter:drop-shadow(0 0 6px rgba(198,255,61,.7));}
+  .falling-item.bad{filter:drop-shadow(0 0 6px rgba(194,54,82,.8));}
+  .pop-up{
+    position:absolute;
+    font-family:'Anton',sans-serif;
+    font-size:16px;
+    letter-spacing:1px;
+    pointer-events:none;
+    animation:pop-up .6s ease-out forwards;
+    z-index:5;
+  }
+  @keyframes pop-up{
+    0%{transform:translateY(0) scale(.8); opacity:1;}
+    100%{transform:translateY(-40px) scale(1.2); opacity:0;}
+  }
+  .pop-up.good{color:var(--lime); text-shadow:1px 1px 0 var(--black);}
+  .pop-up.bad{color:var(--wine-bright); text-shadow:1px 1px 0 var(--black);}
+
+  .game-overlay{
+    position:absolute; inset:0;
+    background:rgba(11,11,12,.9);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+    z-index:10;
+  }
+  .game-overlay h2{
+    font-family:'Anton',sans-serif;
+    font-size:26px;
+    letter-spacing:2px;
+    margin-bottom:8px;
+    color:var(--lime);
+    text-shadow:2px 2px 0 var(--wine);
+  }
+  .game-overlay p{
+    font-size:11px;
+    color:var(--grey);
+    max-width:340px;
+    line-height:1.7;
+    margin-bottom:16px;
+  }
+  .game-overlay .final-score{
+    font-family:'Anton',sans-serif;
+    font-size:44px;
+    color:var(--paper);
+    margin:6px 0 4px;
+    text-shadow:3px 3px 0 var(--wine);
+  }
+  .game-overlay .label{font-size:10px; color:var(--grey); letter-spacing:2px; margin-bottom:14px;}
+  .game-btn{
+    background:linear-gradient(180deg, var(--lime), color-mix(in srgb, var(--lime) 60%, black));
+    color:var(--black);
+    border:none;
+    border-radius:999px;
+    font-family:'Anton',sans-serif;
+    font-size:13px;
+    letter-spacing:2px;
+    padding:11px 28px;
+    box-shadow:0 3px 0 rgba(0,0,0,.5);
+    cursor:pointer;
+  }
+  .game-btn:hover{filter:brightness(1.08);}
+  .legend{
+    display:flex; justify-content:space-around; gap:8px;
+    padding:9px 12px;
+    background:var(--black-3);
+    border-top:1px solid var(--grey-dim);
+    font-size:9px;
+    color:var(--grey);
+    letter-spacing:.5px;
+    flex-wrap:wrap;
+  }
+  .legend span b{color:var(--lime); font-weight:normal;}
+  .legend span.bad b{color:var(--wine-bright);}
+
+  /* ============ GOOD BRO POPUP — 2s ============ */
+  .goodbro-popup{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    background:radial-gradient(circle, rgba(198,255,61,.18), rgba(11,11,12,.97) 70%);
+    z-index:20;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+    padding:20px;
+  }
+  .goodbro-popup.show{
+    opacity:1;
+  }
+  .goodbro-popup img{
+    max-width:60%;
+    max-height:45%;
+    object-fit:contain;
+    border:3px solid var(--lime);
+    border-radius:10px;
+    background:var(--black-2);
+    box-shadow:0 0 0 4px rgba(0,0,0,.6), 0 0 40px rgba(198,255,61,.8);
+    animation:goodbro-img-in .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes goodbro-img-in{
+    0%{transform:scale(.2) rotate(-20deg); opacity:0;}
+    60%{transform:scale(1.15) rotate(6deg); opacity:1;}
+    100%{transform:scale(1) rotate(0deg); opacity:1;}
+  }
+  .goodbro-popup .txt{
+    font-family:'Bangers',cursive;
+    font-size:clamp(38px, 9vw, 80px);
+    letter-spacing:5px;
+    color:var(--lime);
+    text-shadow:
+      3px 3px 0 var(--wine),
+      6px 6px 0 var(--black),
+      0 0 40px rgba(198,255,61,.9);
+    animation:goodbro-wiggle .55s ease-in-out infinite;
+    text-align:center;
+    line-height:1;
+  }
+  .goodbro-popup .emoji-row{
+    font-size:clamp(28px, 6vw, 48px);
+    letter-spacing:12px;
+    animation:goodbro-emoji-bounce .8s ease-in-out infinite;
+    filter:drop-shadow(0 0 10px rgba(198,255,61,.6));
+  }
+  @keyframes goodbro-wiggle{
+    0%,100%{transform:rotate(-5deg) scale(1);}
+    50%{transform:rotate(5deg) scale(1.08);}
+  }
+  @keyframes goodbro-emoji-bounce{
+    0%,100%{transform:translateY(0) scale(1);}
+    50%{transform:translateY(-10px) scale(1.15);}
+  }
+
+  /* ============ END GAME — image center, no emoji ============ */
+  .end-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+  }
+  .end-img{
+    max-width:140px;
+    max-height:120px;
+    object-fit:contain;
+    border:2px solid var(--lime);
+    border-radius:8px;
+    box-shadow:0 0 0 3px rgba(0,0,0,.5), 0 0 24px rgba(198,255,61,.6);
+    animation:end-img-in .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes end-img-in{
+    0%{transform:scale(.2) rotate(-20deg); opacity:0;}
+    60%{transform:scale(1.15) rotate(5deg); opacity:1;}
+    100%{transform:scale(1) rotate(0deg); opacity:1;}
+  }
+  .end-msg{
+    font-family:'Bangers',cursive;
+    font-size:clamp(16px, 3.5vw, 22px);
+    letter-spacing:1.5px;
+    color:var(--lime);
+    text-shadow:
+      2px 2px 0 var(--wine),
+      3px 3px 0 var(--black);
+    max-width:340px;
+    line-height:1.2;
+    text-align:center;
+    animation:end-msg-in .7s .2s cubic-bezier(.34,1.56,.64,1) both;
+    margin: 4px 0;
+  }
+  @keyframes end-msg-in{
+    0%{transform:translateY(20px) scale(.6) rotate(-5deg); opacity:0;}
+    70%{transform:translateY(-4px) scale(1.08) rotate(2deg); opacity:1;}
+    100%{transform:translateY(0) scale(1) rotate(0deg); opacity:1;}
+  }
+
+  /* ============ INSTRUCTION START ============ */
+  .instruction-box{
+    background:var(--black-3);
+    border:1px dashed var(--grey-dim);
+    border-radius:6px;
+    padding:12px 16px;
+    margin-bottom:14px;
+    font-size:10px;
+    line-height:1.9;
+    color:var(--paper);
+    text-align:left;
+    max-width:340px;
+    animation:instr-in .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .instruction-box b{color:var(--lime);}
+  .instruction-box .row{display:flex; gap:6px; align-items:center;}
+  @keyframes instr-in{
+    0%{transform:translateY(10px); opacity:0;}
+    100%{transform:translateY(0); opacity:1;}
+  }
+
+  @media (max-width:600px){
+    #gameStage{height:340px;}
+    .falling-item{font-size:26px;}
+    .game-window{max-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-track">
+        <span>★ MEMBER SPOTLIGHT</span>
+        <span>LNGSHOT4SHO</span>
+        <span>MEET THE BOYS</span>
+        <span>★ MEMBER SPOTLIGHT</span>
+        <span>LNGSHOT4SHO</span>
+        <span>MEET THE BOYS</span>
+        <span>★ MEMBER SPOTLIGHT</span>
+        <span>LNGSHOT4SHO</span>
+        <span>MEET THE BOYS</span>
+      </div>
+</div>
+<div class="topbar-mini">
+  <a href="#">sign in</a>
+  <a href="#">join now!</a>
+  <span>☆</span>
+</div>
+
+<header class="topnav">
+  <div class="logo">LNG<span>SHOT</span>4SHO</div>
+  <nav class="mainnav">
+    <a href="#hero"><span class="ic">⌂</span>home</a>
+    <a href="#drops"><span class="ic">★</span>music</a>
+    <a href="#about-section"><span class="ic">♥</span>members</a>
+    <a href="#faves"><span class="ic">◆</span>achievement</a>
+    <a href="#" class="locked" id="gameNavBtn"><span class="ic">◐</span>game</a>
+    <a href="#footer"><span class="ic">✉</span>contact</a>
+  </nav>
+  <div class="searchbar" id="searchBar">
+    <input type="text" id="searchInput" placeholder="search the site...">
+    <button id="searchBtn">→</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="layout-top" id="hero">
+    <aside>
+      <div class="win quicklinks">
+        <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">☰ quick links</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+        <div class="win-body">
+          <ul>
+            <li><a href="#about-section">member profiles <span>›</span></a></li>
+            <li><a href="#drops">music <span>›</span></a></li>
+            <li><a href="#footer">contact <span>›</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-widget">
+        <b>welcome shotties! ★</b>
+        Hi, this is made by Shotties in Vietnam, and we hope you find something that hits different.
+        <span class="sign">XOX, love you LongShot.</span>
+      </div>
+    </aside>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1 class="hero-headline">MADE 4<br>THE BLOCK</h1>
+        <p class="hero-sub">Hey, what's good? It's Long Shot 4sho, and we out. Peace.</p>
+        <div class="hero-btns">
+          <a class="btn-solid" href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener">listen now</a>
+          <a class="btn-solid alt" href="#about-section">about us</a>
+        </div>
+        <div class="hero-links"><span>Made by Shotties in Vietnam</span></div>
+      </div>
+      <div class="hero-photo-wrap">
+        <div class="win">
+          <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">◇ shot.jpg</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+          <div class="hero-photo"><img src="shot.jpg" alt="LNGSHOT group photo"></div>
+        </div>
+        <div class="float-chip chip-cd">◉</div>
+        <div class="float-chip chip-star">★</div>
+        <div class="float-chip chip-cursor">➤</div>
+      </div>
+    </section>
+
+    <aside class="col-right">
+      <div class="win">
+        <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">✉ new message!</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+        <div class="win-body msg-body">
+          <div>
+            <div id="message-line"><span class="heart">♥</span> you have (1) new message</div>
+            <button id="message-ok">ok</button>
+            <div id="love-message" style="display:none;margin-top:10px;color:var(--paper);font-size:11px;line-height:1.5;">
+              Love you, Shotties
+              <small style="display:block;color:var(--grey);font-size:9px;margin-top:4px;">From Lngshot</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="win">
+        <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">▶ now playing</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+        <div class="win-body">
+          <div class="np-track">
+            <div class="np-thumb"></div>
+            <div class="np-info"><b>MOONWALKIN</b>by lngshot4sho</div>
+          </div>
+          <div class="np-bar"></div>
+          <div class="np-controls"><span>⏮</span><span>⏸</span><span>⏭</span></div>
+        </div>
+      </div>
+      <div class="sticky-note">
+        <b>don't forget:</b>
+        ☆ stream everyday<br>
+        ☆ hydrate + rest up<br>
+        ☆ stan responsibly<br>
+        ☆ new ep dropping soon
+      </div>
+    </aside>
+  </div>
+
+  <div class="promo-strip">
+    <div class="promo-item"><span class="ic">◆</span><div><div class="tt">achievement</div><div class="sm">4SHO wins & milestones, debut to now</div></div></div>
+    <div class="join-box">
+      <div class="tt">merch code</div>
+      <div class="sm">enter a code to unlock something special</div>
+      <div class="join-row"><input id="merch-code" type="text" placeholder="enter code"><button id="merch-go">go!</button></div>
+    </div>
+  </div>
+
+  <div class="grid-3" id="drops">
+    <div class="win" id="drops-window">
+      <div class="win-bar" style="--accent:var(--wine)"><span class="win-name">♥ latest drops</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body" id="drops-body"></div>
+    </div>
+
+    <div class="win">
+      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">☆ socials</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body">
+        <div class="block-tag"><b>FOLLOW US</b><br>stay updated wherever you scroll.</div>
+        <div class="socials-grid">
+          <a class="social-btn" href="https://www.instagram.com/lngshot4sho/" target="_blank" rel="noopener"><span class="ic">◎</span>instagram</a>
+          <a class="social-btn" href="https://www.tiktok.com/@lngshot4sho" target="_blank" rel="noopener"><span class="ic">♪</span>tiktok</a>
+          <a class="social-btn" href="https://x.com/lngshot4sho" target="_blank" rel="noopener"><span class="ic">✕</span>twitter</a>
+          <a class="social-btn" href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener"><span class="ic">▶</span>youtube</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="win">
+      <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">☰ 4SHO timeline</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body">
+          <div class="block-tag"><b>FROM DEBUT TO NOW</b><br>the story so far.</div>
+          <div class="pl-row"><span class="n">01</span><span class="t">pre-debut / trainee days</span><span class="d">before</span></div>
+          <div class="pl-row"><span class="n">02</span><span class="t">4SHOBOIZ MIXTAPE</span><span class="d">debut</span></div>
+          <div class="pl-row now"><span class="n">03</span><span class="t">4SHOVILLE era</span><span class="d">now</span></div>
+        </div>
+    </div>
+  </div>
+
+  <section id="about-section" class="win" style="margin-top:22px;">
+    <div class="win-bar" style="--accent:var(--blue-bright)">
+      <span class="win-name">♥ about lngshot</span>
+      <div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div>
+    </div>
+    <div class="win-body">
+      <div class="block-tag"><b>MEET THE MEMBERS</b><br>From four strangers to one close-knit group — we are LongShot.</div>
+      <div class="member-grid">
+        <a class="member-card" href="#" data-member-page="0">
+          <div class="member-photo"><img src="ohyul.jpg" alt="Ohyul"></div>
+          <div class="member-name">Ohyul</div>
+        </a>
+        <a class="member-card" href="#" data-member-page="1">
+          <div class="member-photo"><img src="louis.jpg" alt="Louis"></div>
+          <div class="member-name">Louis</div>
+        </a>
+        <a class="member-card" href="#" data-member-page="2">
+          <div class="member-photo"><img src="ryul.jpg" alt="Ryul"></div>
+          <div class="member-name">Ryul</div>
+        </a>
+        <a class="member-card" href="#" data-member-page="3">
+          <div class="member-photo"><img src="woojin.jpg" alt="Woojin"></div>
+          <div class="member-name">Woojin</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid-blog" id="members-sec">
+    <div class="win">
+      <div class="win-bar" style="--accent:var(--blue-bright)"><span class="win-name">▤ shot notes</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body">
+        <ul class="blog-list">
+            <li><span class="tag">4shocover</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">4shocover</a></li>
+            <li><span class="tag">4shotape</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">4shotape</a></li>
+            <li><span class="tag">official audio</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">official audio</a></li>
+            <li><span class="tag">music audio</span><a href="https://www.youtube.com/" target="_blank" rel="noopener">music audio</a></li>
+          </ul>
+      </div>
+    </div>
+
+    <div class="welcome-banner">
+      <h3>WELCOME TO<br>4SHOVILLE</h3>
+      <p>from four strangers to one close-knit group — this is LongShot.</p>
+      <button onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})">meet the members →</button>
+    </div>
+
+    <div class="win" id="faves">
+      <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">♥ shottie board</span><div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div></div>
+      <div class="win-body">
+        <div class="block-tag"><b>FAN VOTE</b><br>pick a board below and make your choice.</div>
+        <div class="faves-row board-link" data-board="track"><span><span class="ic">♥</span>favorite track poll</span><span class="count">›</span></div>
+        <div class="faves-row board-link" data-board="pets"><span><span class="ic">☆</span>shottie choice</span><span class="count">›</span></div>
+        <div class="faves-row"><span><span class="ic">◆</span>monthly fan pick</span><span class="count">soon</span></div>
+        <button class="upload-btn" id="learn-more-votes">learn more</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<section id="fan-vote-section" class="win fan-vote-panel" style="margin-top:22px;">
+  <div class="win-bar" style="--accent:var(--blue-bright)">
+    <span class="win-name">♥ fan vote</span>
+    <div class="win-dots"><span>_</span><span>▢</span><span>✕</span></div>
+  </div>
+  <div class="win-body">
+    <div id="vote-track" class="vote-view">
+      <div class="vote-layout">
+        <div>
+          <div class="block-tag"><b>WHICH ONE DO YOU LIKE THE MOST?</b><br>Select one and submit your vote.</div>
+          <label class="vote-option"><input type="radio" name="trackVote" value="4SHOBOIZ"><span>4SHOBOIZ</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="Training Days"><span>Training Days</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="ShotCallers"><span>ShotCallers</span></label>
+          <label class="vote-option"><input type="radio" name="trackVote" value="4SHOVILLE"><span>4SHOVILLE</span></label>
+          <button class="upload-btn" id="submit-track-vote">submit vote</button>
+          <div id="track-vote-status" class="block-tag" style="display:none"></div>
+        </div>
+        <div class="vote-results" id="track-results">
+          <b>VOTE RESULTS</b>
+          <div class="result-row"><span>4SHOBOIZ</span><strong data-result="4SHOBOIZ">0</strong></div>
+          <div class="result-row"><span>Training Days</span><strong data-result="Training Days">0</strong></div>
+          <div class="result-row"><span>ShotCallers</span><strong data-result="ShotCallers">0</strong></div>
+          <div class="result-row"><span>4SHOVILLE</span><strong data-result="4SHOVILLE">0</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="vote-pets" class="vote-view" style="display:none">
+      <div class="block-tag"><b>SHOTTIES' FAVORITE PET</b><br>Who is the fandom favorite?</div>
+      <label class="vote-option"><input type="radio" name="petVote" value="Hunter"><span>Hunter</span></label>
+      <label class="vote-option"><input type="radio" name="petVote" value="Coco"><span>Coco</span></label>
+      <button class="upload-btn" id="submit-pet-vote">submit vote</button>
+      <div id="pet-vote-status" class="block-tag" style="display:none"></div>
+      <div class="vote-results">
+        <b>VOTE RESULTS</b>
+        <div class="result-row"><span>Hunter</span><strong data-pet-result="Hunter">0</strong></div>
+        <div class="result-row"><span>Coco</span><strong data-pet-result="Coco">0</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer-ticker">
+  <div class="ticker-track">
+    <span>NEW EP DROPPING SOON</span><span>·</span><span>4SHOBOSHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
+    <span>NEW EP DROPPING SOON</span><span>·</span><span>4SHOBOSHOW BOYS ARE COMING RIGHT NOW</span><span>·</span><span>SHOTTIES FOLLOW ME</span><span>·</span>
+  </div>
+</div>
+
+<footer class="site-footer" id="footer">
+  <div class="footer-grid">
+    <div class="footer-col footer-brand">
+      <div class="logo">LNG<span style="color:var(--blue-bright)">SHOT</span>4SHO</div>
+      <p>© 2026 LNGSHOT4SHO</p>
+      <div class="social-row">
+        <a href="https://www.instagram.com/lngshot4sho/" target="_blank" rel="noopener">ig</a>
+        <a href="https://www.tiktok.com/@lngshot4sho" target="_blank" rel="noopener">tt</a>
+        <a href="https://x.com/lngshot4sho" target="_blank" rel="noopener">tw</a>
+        <a href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener">yt</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>music</h4>
+      <ul><li><a href="#">all releases</a></li><li><a href="#">latest drop</a></li><li><a href="#">lyrics</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h4>about</h4>
+      <ul><li><a href="#about-section">members</a></li><li><a href="#faves">achievements</a></li><li><a href="#">the game</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h4>help</h4>
+      <ul><li><a href="#">faq</a></li><li><a href="#">contact</a></li><li><a href="#">fan mail</a></li></ul>
+    </div>
+    <div class="footer-col">
+      <h4>let's be friends!</h4>
+      <ul><li><a href="#">@fromshottiesvietnamwithlove</a></li><li><a href="#">newsletter signup</a></li></ul>
+    </div>
+  </div>
+</footer>
+
+<div id="member-page-modal" class="album-modal" aria-hidden="true">
+  <div class="album-modal-inner member-page-inner">
+    <button class="album-close" id="member-page-close">✕</button>
+    <div id="member-page-content"></div>
+  </div>
+</div>
+<div id="album-modal" class="album-modal" aria-hidden="true">
+  <div class="album-modal-inner">
+    <button class="album-close" id="album-close">✕</button>
+    <div id="album-detail"></div>
+  </div>
+</div>
+
+<div class="unlock-toast" id="unlockToast">🎉 SECRET UNLOCKED!</div>
+
+<!-- GAME MODAL -->
+<div class="game-modal" id="gameModal" aria-hidden="true">
+  <div class="game-window">
+    <div class="game-window-bar">
+      <div class="left"><span>◐</span><span>CATCH_THE_SHOT.exe</span></div>
+      <button class="game-close-btn" id="gameCloseBtn">✕</button>
+    </div>
+    <div class="game-info">
+      <div>SCORE<span class="score-val" id="gameScore">0</span></div>
+      <div>BEST<span class="best-val" id="gameBest">0</span></div>
+      <div>TIME<span class="timer-val" id="gameTimer">15</span></div>
+    </div>
+    <div id="gameStage">
+      <div class="goodbro-popup" id="goodBroPopup">
+        <div class="emoji-row">😱🤯💀</div>
+        <img src="ryulmeme.jpg" alt="good bro">
+        <div class="txt">GOOD BRO!</div>
+        <div class="emoji-row">🔥⚡💯</div>
+      </div>
+
+      <div class="game-overlay" id="gameStartOverlay">
+        <h2>CATCH THE SHOT</h2>
+        <div class="instruction-box">
+          <div class="row"><b>▸</b> You have <b>15 seconds</b></div>
+          <div class="row"><b>▸</b> Tap/click the good stuff: 🎤 💿 🎧 ★</div>
+          <div class="row"><b>▸</b> Avoid the bad stuff: 💣 ❌</div>
+          <div class="row"><b>▸</b> Reach 8 points for a surprise 👀</div>
+        </div>
+        <button class="game-btn" id="gameStartBtn">▶ START</button>
+      </div>
+      <div class="game-overlay" id="gameEndOverlay" style="display:none">
+        <div class="end-wrap">
+          <img class="end-img" src="lngshot.jpg" alt="lngshot">
+          <div class="end-msg" id="endMsg"></div>
+          <div class="final-score" id="finalScore">0</div>
+          <div class="label" id="finalLabel">YOUR SCORE</div>
+          <button class="game-btn" id="gameAgainBtn">↻ PLAY AGAIN</button>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span>🎤 <b>+1</b></span>
+      <span>💿 <b>+1</b></span>
+      <span>🎧 <b>+1</b></span>
+      <span>★ <b>+2</b></span>
+      <span class="bad">💣 <b>-3</b></span>
+      <span class="bad">❌ <b>-5</b></span>
+    </div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <button class="start-btn">◆ start</button>
+  <div class="tab-pill">🗎 home.html</div>
+  <div class="tab-pill">✉ new message (1)</div>
+  <div class="tray">
+    <span>🔊</span><span>📶</span>
+    <span id="clock">--:--</span>
+  </div>
+</div>
+
+<script>
+/* ========== ALBUMS ========== */
+const albums = [
+  { id:'mixtape', name:'4SHOBOIZ MIXTAPE', image:'LNGSHOT_4shoboiz_Mixtape_YouTube_cover.webp', dur:'22:20',
+    tracks:[
+      ['Are You Ready','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Trust Myself (Ryul)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Thinking (Ryul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['All Good (좋은 마음으로) (Woojin, Ryul)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Ejeh (아닌 걸 알아 이제) (Woojin)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Next 2 U (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['My Side (Woojin, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Next 2 U (Sped Up) (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Next 2 U (Carol Remix) (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk'],
+      ['Next 2 U (Carol Remix) (Sped Up) (Ohyul, Louis)','https://youtu.be/J_BB2MGH_hU?si=ugJdLGgTdtgKE9Bk']
+    ] },
+  { id:'shotcaller', name:'SHOT CALLERS', image:'LNGSHOT_Shot_Callers_digital_album_cover.webp', dur:'15:23',
+    tracks:[
+      ['Backseat','https://youtu.be/B3Dyzl5dyKY?si=3jefaByrRGsBD4tT'],
+      ["Saucin'",'https://youtu.be/GFRu5ea_klk?si=ySI4UUNxAzF_9TvG'],
+      ["Moonwalkin'",'https://youtu.be/HJgdT15UT4k?si=gX_HnB2JxTpx_hui'],
+      ['FaceTime','https://youtu.be/GGe5OkNgZjQ?si=i9jpyEPolRSEiETh'],
+      ['Never Let Go','https://youtu.be/sOsh_GKOny4?si=uarh26WcmtaHt-V0']
+    ] },
+  { id:'trainingday', name:'TRAINING DAY', image:'LNGSHOT_Training_Day.png', dur:'—',
+    tracks:[
+      ['Good Girls by LOUIS LIM (LNGSHOT)','https://youtu.be/vxdfyofrku8?si=Q4qFDiz-6sVh2rJF'],
+      ['Boo Thang by WOOJIN (LNGSHOT)','https://youtu.be/sT26L3VK9PI?si=YqPXfI22gQWl3cGM'],
+      ['Summer Eyes by OHYUL (LNGSHOT)','https://youtu.be/BpaPhGGEPS8?si=DZEoQItUVuyIJuML'],
+      ['For Us by RYUL (LNGSHOT)','https://youtu.be/z8-CJIUyg9A?si=bTyv9KZY-Q6LzSFt'],
+      ['Vanilla Days Lyrics','https://youtu.be/P2llSm9tZvA?si=m8n314xRPNjbX-jp']
+    ] },
+  { id:'4shoville', name:'4SHOVILLE', image:'LNGSHOT_4shoboiz_Vol._2_4shoville_digital_album_cover.webp', dur:'27:39',
+    tracks:[
+      ['4sho 4sho','https://youtu.be/Q1sE699jthg?si=mTgMAgiqA30eP779'],
+      ['Yeah! Yeah!','https://youtu.be/XdujOljuyNw?si=_Pc2mKUyCxw3gVgM'],
+      ['No Hi, No Hey','https://youtu.be/3IfOZT4dOWM?si=5KdP4wPQGETIk6FJ'],
+      ['Run It Up','https://youtu.be/LSXiFgGlmDw?si=RUe6DmcHKyYEvOu5'],
+      ['Gukbbong','https://youtu.be/1Ya1Tp3vm7k?si=BIzK22IEk2cmOb12'],
+      ['Moya','https://youtu.be/zOgfFtZ5QBY?si=nK1x8TKhf9XeEtAm'],
+      ['The Purge 4shomix','https://youtu.be/XWSNhIENE_Q?si=E0CkJvJSns4gVBpV'],
+      ['Public Enemy 4shomix (feat. DJ Wegun)','https://youtu.be/DEl-ARI3Y7g?si=S7O6S9CfARf2ZjaD']
+    ] }
+];
+
+document.getElementById('drops-body').innerHTML = albums.map(al=>`
+  <div class="drop-card">
+    <div class="drop-thumb" style="background-image:url('${al.image}');background-size:cover;background-position:center;"></div>
+    <div>
+      <div class="drop-name">${al.name}</div>
+      <div class="drop-sub">${al.dur}</div>
+      <button class="learn-more" data-album="${al.id}">learn more</button>
+    </div>
+  </div>`).join('');
+
+function openAlbum(id){
+  const album = albums.find(a=>a.id === id);
+  if(!album) return;
+  const modal = document.getElementById('album-modal');
+  const detail = document.getElementById('album-detail');
+  detail.innerHTML = `
+    <div class="album-detail-grid">
+      <div>
+        <div class="album-cover"><img src="${album.image}" alt="${album.name}"></div>
+        <div class="album-detail-title" style="margin-top:12px">${album.name}</div>
+      </div>
+      <div>
+        <div class="win-bar" style="--accent:var(--wine-bright)"><span class="win-name">☰ track list</span></div>
+        <div style="padding-top:8px">
+          ${album.tracks.map((t,i)=>`<div class="album-track" data-track="${i}"><span>${String(i+1).padStart(2,'0')} ${t[0]}</span><span>›</span></div>`).join('')}
+        </div>
+        <div class="album-song-link" id="album-song-link"></div>
+      </div>
+    </div>`;
+  detail.querySelectorAll('.album-track').forEach((row,i)=>{
+    row.addEventListener('click',()=>{
+      const track = album.tracks[i];
+      document.getElementById('album-song-link').style.display='block';
+      document.getElementById('album-song-link').innerHTML =
+        `<b>${track[0]}</b><br><a href="${track[1]}" target="_blank" rel="noopener">watch on YouTube →</a>`;
+    });
+  });
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+}
+document.addEventListener('click', e=>{
+  const btn=e.target.closest('.learn-more');
+  if(btn) openAlbum(btn.dataset.album);
+});
+document.getElementById('album-close').addEventListener('click',()=>{
+  document.getElementById('album-modal').classList.remove('open');
+  document.getElementById('album-modal').setAttribute('aria-hidden','true');
+});
+document.getElementById('album-modal').addEventListener('click',e=>{
+  if(e.target.id==='album-modal') document.getElementById('album-close').click();
+});
+
+/* ========== MESSAGE ========== */
+document.getElementById('message-ok').addEventListener('click',()=>{
+  const oldMessage = document.getElementById('message-line');
+  const button = document.getElementById('message-ok');
+  const love = document.getElementById('love-message');
+  if(oldMessage) oldMessage.style.display='none';
+  if(button) button.style.display='none';
+  if(love) love.style.display='block';
+});
+
+/* ========== MERCH CODE ========== */
+document.getElementById('merch-go').addEventListener('click',()=>{
+  const code=document.getElementById('merch-code').value.trim();
+  if(!code) return;
+  alert('Code received: ' + code);
+});
+
+/* ========== CLOCK ========== */
+function tick(){
+  const d = new Date();
+  let h = d.getHours(), m = d.getMinutes();
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if(h===0) h = 12;
+  document.getElementById('clock').textContent = h + ':' + String(m).padStart(2,'0') + ' ' + ap;
+}
+tick();
+setInterval(tick,15000);
+
+/* ========== BOARD LINKS ========== */
+document.querySelectorAll('.board-link').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const type = card.dataset.board;
+    document.getElementById('fan-vote-section').scrollIntoView({behavior:'smooth'});
+    document.querySelectorAll('.vote-view').forEach(v=>v.style.display='none');
+    const target = type === 'pets' ? document.getElementById('vote-pets') : document.getElementById('vote-track');
+    if(target) target.style.display='block';
+  });
+});
+document.getElementById('learn-more-votes')?.addEventListener('click',()=>{
+  document.getElementById('fan-vote-section').scrollIntoView({behavior:'smooth'});
+});
+
+/* ========== VOTE ========== */
+const trackVotes = {'4SHOBOIZ':0,'Training Days':0,'ShotCallers':0,'4SHOVILLE':0};
+document.getElementById('submit-track-vote')?.addEventListener('click',()=>{
+  const chosen = document.querySelector('input[name="trackVote"]:checked');
+  const status = document.getElementById('track-vote-status');
+  if(!chosen){ status.textContent='Please choose a track first.'; status.style.display='block'; return; }
+  trackVotes[chosen.value]++;
+  document.querySelector(`[data-result="${chosen.value}"]`).textContent = trackVotes[chosen.value];
+  status.textContent=`Vote submitted — ${chosen.value}`;
+  status.style.display='block';
+});
+
+const petVotes = {'Hunter':0,'Coco':0};
+document.getElementById('submit-pet-vote')?.addEventListener('click',()=>{
+  const chosen = document.querySelector('input[name="petVote"]:checked');
+  const status = document.getElementById('pet-vote-status');
+  if(!chosen){ status.textContent='Please choose one first.'; status.style.display='block'; return; }
+  petVotes[chosen.value]++;
+  document.querySelector(`[data-pet-result="${chosen.value}"]`).textContent = petVotes[chosen.value];
+  status.textContent=`Vote submitted — ${chosen.value}`;
+  status.style.display='block';
+});
+
+/* ========== MEMBER DATA ========== */
+const memberData = [
+  {
+    name:'Ohyul',
+    image:'ohyul.jpg',
+    koreanName:'Kwon Oh Yul (권오율)',
+    position:'Leader, Lead Vocalist',
+    training:'5 years',
+    birthday:'January 21, 2006',
+    height:'182cm (5\'11")',
+    blood:'O',
+    mbti:'ISTP',
+    nationality:'South Korea 🇰🇷',
+    motto:'"Just do it"',
+    facts:[
+      'Nicknames: 562, Salmon 🍣, Cat 🐈‍⬛',
+      'Former trainee at KOZ Entertainment',
+      'Self-taught guitarist 🎸',
+      'Loves listening to music and is a huge fan of Ed Sheeran',
+      'Co-writer of "Remedy" by Jay Park (with Louis)',
+      'Appeared in the MV and worked as a backup dancer for "Gimme A Minute" by Jay Park',
+      'Childhood dream: Pilot ✈️',
+      'Has one older sister',
+      'Favorite foods: Spicy food 🌶, Kimchi stew, Jokbal, salmon 🍣 (once got kicked out of a restaurant for eating too much)',
+      'Once ate 30–40 servings of salmon as a trainee',
+      'Usually runs 5km and works out almost every day',
+      'Always the last in the group to catch up with trends — or never knows them at all',
+      'Attended Hanlim Multi Art School – Applied Music Department'
+    ]
+  },
+  {
+    name:'Louis',
+    image:'louis.jpg',
+    koreanName:'Lim Ji Ho (임지호)',
+    position:'Maknae, Main Vocalist',
+    training:'~2 years',
+    birthday:'May 1, 2010',
+    height:'187cm (6\'2")',
+    blood:'B',
+    mbti:'INFJ',
+    nationality:'South Korea 🇰🇷 – France 🇫🇷',
+    motto:'"Work really hard"',
+    facts:[
+      'Full name: Louis Elliot Jourdain Lim',
+      'Nickname given by members: Big Elephant Giant Baby 🐘',
+      'Father is French 🇫🇷, mother is Korean 🇰🇷',
+      'Co-writer of "Remedy" by Jay Park (with Ohyul)',
+      'Shoe size 👟: 300mm',
+      'Childhood dream: Soccer player ⚽',
+      'Hobbies: Playing basketball 🏀, gaming (Roblox, Minecraft, etc.)',
+      'Loves sweets and snacks',
+      'Attended Lycée Français de Seoul (LFS) for 8 years',
+      'Currently attending Hanlim Multi Art School',
+      'Somewhat scared of Ryul because he always teases him',
+      'Grew too fast, so his limbs stretched quickly and his body couldn\'t stay flexible',
+      'Recorded "Moonwalkin\'" at 13 years old',
+      'Sang "Love" by Keyshia Cole at his audition for More Vision and Hanlim entrance',
+      'Speaks Korean, French, English, and a little Spanish',
+      'Only child',
+      'Has a pet cat named Hunter 🐈'
+    ]
+  },
+  {
+    name:'Ryul',
+    image:'ryul.jpg',
+    koreanName:'Kim Ryul (김률)',
+    position:'Main Rapper',
+    training:'3 years',
+    birthday:'September 18, 2006',
+    height:'180cm (5\'11")',
+    blood:'AB',
+    mbti:'ISTJ',
+    nationality:'South Korea 🇰🇷',
+    motto:'Persist to the end',
+    facts:[
+      'Nicknames: yulmu, Gyul (Tangerine 🍊), Kim Gyul, Potato 🥔 (given during RAP:PUBLIC)',
+      'Nicknames given by members: Silly older brother, Lizard 🦎, Poisonous frog 🐸',
+      'According to the members, he is the funniest one',
+      'Can play many instruments, most notably piano 🎹',
+      'Loves playing Minecraft',
+      'Once had a gaming YouTube channel as a kid with about 560 subscribers',
+      'Participated in the reality show: RAP:PUBLIC (2024)',
+      'Childhood dream: Doctor',
+      'Only child',
+      'Attended Hanlim Multi Art School – Film Production major (transferred in senior year)',
+      'Has a pet dog named Coco 🐶',
+      'Studied at KMC Music Academy',
+      'Once composed a song in about 30 minutes',
+      'During the Saucin shoot in Vietnam, he loved pho — once ate 3 bowls in one sitting and gained 2–3kg'
+    ]
+  },
+  {
+    name:'Woojin',
+    image:'woojin.jpg',
+    koreanName:'Jeong Woo Jin (정우진)',
+    position:'Composer, Main Dancer',
+    training:'6 years',
+    birthday:'March 8, 2008',
+    height:'179cm (5\'9.7")',
+    blood:'A',
+    mbti:'ISTP',
+    nationality:'South Korea 🇰🇷',
+    motto:'"If it\'s something I truly love and believe in, I\'ll give it my all until it becomes reality"',
+    facts:[
+      'Nicknames: Jin-E, Corn 🌽',
+      'Appeared in the MV and worked as a backup dancer for "Gimme A Minute" by Jay Park',
+      'Former trainee at Big Hit',
+      'Currently attending Hanlim Multi Art School – Practical Dance major',
+      'All-rounder: dancing, singing, rapping, and songwriting are all above average to great',
+      'Childhood dream: Painter 🎨 (both parents work in art-related fields)',
+      'Daily routine: eats two meals a day and searches for new songs',
+      'Has a scar on one eye from being scratched by his grandmother\'s cat as a child',
+      'Has two pet cats 🐱: Bank and Cloud',
+      'Valedictorian of the A-track (lime)',
+      'Has one younger sister and one younger brother',
+      'Sang "JOAH" by Jay Park at his audition',
+      'During the Saucin shoot, he invited the members to go swimming, but they went for a massage without inviting him'
+    ]
+  }
+];
+
+document.querySelectorAll('[data-member-page]').forEach(card=>{
+  card.addEventListener('click', e=>{
+    e.preventDefault();
+    const m = memberData[Number(card.dataset.memberPage)];
+    document.getElementById('member-page-content').innerHTML = `
+      <div class="member-page-grid">
+        <div class="member-page-image"><img src="${m.image}" alt="${m.name}"></div>
+        <div class="member-page-copy">
+          <h1>${m.name}</h1>
+          <div class="member-meta">
+            <b>Korean Name:</b> ${m.koreanName}<br>
+            <b>Position:</b> ${m.position}<br>
+            <b>Training Period:</b> ${m.training}<br>
+            <b>Birthday:</b> ${m.birthday}<br>
+            <b>Height:</b> ${m.height}<br>
+            <b>Blood Type:</b> ${m.blood}<br>
+            <b>MBTI:</b> ${m.mbti}<br>
+            <b>Nationality:</b> ${m.nationality}<br>
+            <b>Motto:</b> ${m.motto}
+          </div>
+          <h3>FUN FACTS</h3>
+          <ul>
+            ${m.facts.map(f=>`<li>${f}</li>`).join('')}
+          </ul>
+        </div>
+      </div>`;
+    const modal=document.getElementById('member-page-modal');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+  });
+});
+document.getElementById('member-page-close')?.addEventListener('click',()=>{
+  const modal=document.getElementById('member-page-modal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+});
+document.getElementById('member-page-modal')?.addEventListener('click',e=>{
+  if(e.target.id==='member-page-modal') document.getElementById('member-page-close').click();
+});
+
+/* ============================================================
+   EASTER EGG SEARCH → GAME
+   ============================================================ */
+const SECRET_INPUTS = [
+  '13/1/2026','13/01/2026','13-1-2026','13-01-2026',
+  '13.1.2026','13.01.2026','1312026','13 1 2026','13 01 2026',
+  '13 january 2026','13 jan 2026','january 13 2026','jan 13 2026',
+  'january 13, 2026','jan 13, 2026'
+];
+
+function showUnlockToast(callback){
+  const toast = document.getElementById('unlockToast');
+  toast.classList.add('show');
+  setTimeout(()=>{
+    toast.classList.remove('show');
+    if(callback) callback();
+  }, 900);
+}
+
+function handleSearch(){
+  const raw = document.getElementById('searchInput').value.trim().toLowerCase().replace(/\s+/g,' ');
+  const normalized = raw.replace(/,\s*/g, ', ');
+  if(SECRET_INPUTS.includes(normalized) || SECRET_INPUTS.includes(raw)){
+    document.getElementById('searchInput').value = '';
+    showUnlockToast(()=> openGame());
+  } else {
+    const bar = document.getElementById('searchBar');
+    bar.classList.remove('shake');
+    void bar.offsetWidth;
+    bar.classList.add('shake');
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', handleSearch);
+document.getElementById('searchInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter') handleSearch();
+});
+
+/* ========== GAME: CATCH THE SHOT ========== */
+const gameState = {
+  running: false,
+  paused: false,
+  score: 0,
+  timeLeft: 15,
+  best: Number(localStorage.getItem('lngshot_game_best') || 0),
+  items: [],
+  lastSpawn: 0,
+  spawnInterval: 620,
+  rafId: null,
+  timerId: null,
+  goodBroShown: false,
+  goodBroTimeout: null
+};
+
+const END_MESSAGES = [
+  'BRO REALLY BEAT THE GAME 💀🔥😭',
+  'MISSION ACCOMPLISHED. WE HAVE A GENIUS 🤯⚡💯',
+  'YOU JUST GAINED 1000 AURA 🗿🔥✨'
+];
+
+const ITEMS = [
+  { emoji:'🎤', points:1, type:'good' },
+  { emoji:'💿', points:1, type:'good' },
+  { emoji:'🎧', points:1, type:'good' },
+  { emoji:'★', points:2, type:'good' },
+  { emoji:'💣', points:-3, type:'bad' },
+  { emoji:'❌', points:-5, type:'bad' }
+];
+
+function pickItem(){
+  const r = Math.random();
+  if(r < 0.12) return ITEMS[5];
+  if(r < 0.32
+Nội dung tài liệu quá dài để hiển thị đầy đủ
