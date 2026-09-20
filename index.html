@@ -1086,7 +1086,7 @@
   </div>
 </section>
 
-<!-- ================= ACHIEVEMENT + MERCH CODE ================= -->
+<!-- ================= ACHIEVEMENT + CONFESSION ================= -->
 <section class="sheet ice">
   <div class="sheet-pad strip">
     <div>
@@ -1094,10 +1094,14 @@
       <p>4SHO wins &amp; milestones, debut to now.</p>
     </div>
     <div class="card">
-      <span class="card-head">merch code</span>
+      <span class="card-head">confession</span>
       <div class="card-body">
-        <div class="join-note">enter a code to unlock something special</div>
-        <div class="join-row"><input id="merch-code" type="text" placeholder="enter code" aria-label="merch code"><button id="merch-go">go!</button></div>
+        <div class="join-note">gửi lời thú nhận của bạn cho LNGSHOT4SHO 💌</div>
+        <div class="join-row">
+          <input id="confession-input" type="text" placeholder="viết gì đó..." aria-label="confession">
+          <button id="confession-go">gửi!</button>
+        </div>
+        <div id="confession-status" style="display:none;margin-top:10px;font-size:12px;"></div>
       </div>
     </div>
   </div>
@@ -1482,11 +1486,46 @@ document.getElementById('message-ok').addEventListener('click',()=>{
   if(love) love.style.display='block';
 });
 
-/* ========== MERCH CODE ========== */
-document.getElementById('merch-go').addEventListener('click',()=>{
-  const code=document.getElementById('merch-code').value.trim();
-  if(!code) return;
-  alert('Code received: ' + code);
+/* ========== CONFESSION → TỰ ĐỘNG LƯU VÀO GOOGLE FORM ========== */
+const GOOGLE_FORM_ACTION   = 'https://docs.google.com/forms/d/e/1FAIpQLSeu2Zw6l-i577_tAHu-TxQBzC1d1qTESa9rQ7wlBHa6ESuAHQ/formResponse';
+const GOOGLE_FORM_ENTRY_ID = 'entry.2005620554';
+
+document.getElementById('confession-go').addEventListener('click', async () => {
+  const input  = document.getElementById('confession-input');
+  const status = document.getElementById('confession-status');
+  const text   = input.value.trim();
+
+  if (!text) {
+    status.textContent = '⚠️ Bạn chưa viết gì cả!';
+    status.style.display = 'block';
+    status.style.color = '#b3202f';
+    return;
+  }
+
+  status.textContent = '⏳ Đang gửi...';
+  status.style.display = 'block';
+  status.style.color = '#555';
+
+  const formData = new FormData();
+  formData.append(GOOGLE_FORM_ENTRY_ID, text);
+
+  try {
+    await fetch(GOOGLE_FORM_ACTION, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    });
+    status.textContent = '✅ Đã gửi confession! Cảm ơn Shottie 💖';
+    status.style.color = '#1b7f99';
+    input.value = '';
+  } catch (err) {
+    status.textContent = '❌ Có lỗi xảy ra, thử lại sau nhé!';
+    status.style.color = '#b3202f';
+  }
+});
+
+document.getElementById('confession-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('confession-go').click();
 });
 
 /* ========== CLOCK ========== */
@@ -1739,7 +1778,6 @@ document.getElementById('searchBtn').addEventListener('click', handleSearch);
 document.getElementById('searchInput').addEventListener('keydown', e=>{
   if(e.key === 'Enter') handleSearch();
 });
-// the locked "game" tab just nudges the search bar instead of jumping to the top
 document.getElementById('gameNavBtn').addEventListener('click', e=>{
   e.preventDefault();
   document.getElementById('searchInput').focus();
@@ -1849,17 +1887,14 @@ function handleHit(obj, e){
 }
 
 function showGoodBro(){
-  // Pause game
   gameState.paused = true;
   clearInterval(gameState.timerId);
 
   const popup = document.getElementById('goodBroPopup');
   popup.classList.add('show');
 
-  // 2 seconds
   gameState.goodBroTimeout = setTimeout(()=>{
     popup.classList.remove('show');
-    // Resume game
     gameState.paused = false;
     gameState.timerId = setInterval(()=>{
       if(gameState.paused) return;
