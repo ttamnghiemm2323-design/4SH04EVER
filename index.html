@@ -409,7 +409,7 @@
   .band li:last-child a{border-bottom:none;}
   .band li a:hover{color:var(--cyan);}
 
-  /* ---------- achievement + merch code ---------- */
+  /* ---------- achievement + message ---------- */
   .strip{
     display:grid;
     grid-template-columns:1fr 340px;
@@ -440,6 +440,7 @@
   }
   .join-row button:hover{background:var(--ink);border-color:var(--ink);}
   .join-note{font-size:12px;color:#555;margin-bottom:12px;}
+  .join-note i{color:#777;}
 
   /* ---------- drops (polaroids) ---------- */
   .drops-grid{
@@ -1025,10 +1026,9 @@
 
     <div class="hero-copy">
       <span class="star" style="top:-6px;right:6px;--r:14deg;font-size:48px">★</span>
-      <span class="star w" style="top:250px;right:-4px;--r:-10px;font-size:26px">★</span>
       <div class="tags-row"><span class="tag">member spotlight</span><span class="tag red">meet the boys</span></div>
       <h1 class="hero-headline">MADE 4<br>THE BLOCK</h1>
-      <p class="hero-sub">Hey, what's good? It's Long Shot 4sho, and we out. Peace.</p>
+      <p class="hero-sub">Hey, what's good? It's Lngshot 4sho, and we out. Peace.</p>
       <div class="hero-btns">
         <a class="btn" href="https://youtube.com/@lngshot4sho?si=s-u1_dGxRk_ZpmMy" target="_blank" rel="noopener">listen now</a>
         <a class="btn alt" href="#about-section">about us</a>
@@ -1066,7 +1066,7 @@
     <div>
       <b>welcome shotties! ★</b>
       Hi, this is made by Shotties in Vietnam, and we hope you find something that hits different.
-      <span class="sign">XOX, love you LongShot.</span>
+      <span class="sign">XOX, love you Lngshot.</span>
     </div>
     <div>
       <b>quick links</b>
@@ -1086,7 +1086,7 @@
   </div>
 </section>
 
-<!-- ================= ACHIEVEMENT + CONFESSION ================= -->
+<!-- ================= ACHIEVEMENT + ANYTHING YOU WANNA SAID ================= -->
 <section class="sheet ice">
   <div class="sheet-pad strip">
     <div>
@@ -1094,12 +1094,12 @@
       <p>4SHO wins &amp; milestones, debut to now.</p>
     </div>
     <div class="card">
-      <span class="card-head">confession</span>
+      <span class="card-head">anything that you wanna said?</span>
       <div class="card-body">
-        <div class="join-note">gửi lời thú nhận của bạn cho LNGSHOT4SHO 💌</div>
+        <div class="join-note"><i>Leave them a little message — we might put your answer on our website!</i></div>
         <div class="join-row">
-          <input id="confession-input" type="text" placeholder="viết gì đó..." aria-label="confession">
-          <button id="confession-go">gửi!</button>
+          <input id="confession-input" type="text" placeholder="write something..." aria-label="message">
+          <button id="confession-go">send!</button>
         </div>
         <div id="confession-status" style="display:none;margin-top:10px;font-size:12px;"></div>
       </div>
@@ -1144,7 +1144,7 @@
 <!-- ================= MEMBERS ================= -->
 <section id="about-section" class="sheet teal">
   <div class="sheet-pad">
-    <div class="quote-box">From four strangers to one close-knit group — we are LongShot.</div>
+    <div class="quote-box">From four strangers to one close-knit group — we are Lngshot.</div>
     <div class="tags-row" style="position:relative;z-index:3"><span class="tag red">meet the members</span></div>
     <div class="bg-word" aria-hidden="true">MEET</div>
     <div class="member-grid">
@@ -1187,7 +1187,7 @@
     <div class="welcome-banner">
       <span class="star w" style="top:14px;right:18px;--r:12deg;font-size:34px">★</span>
       <h3>WELCOME TO<br>4SHOVILLE</h3>
-      <p>from four strangers to one close-knit group — this is LongShot.</p>
+      <p>from four strangers to one close-knit group — this is Lngshot.</p>
       <button onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})">meet the members</button>
     </div>
 
@@ -1486,7 +1486,7 @@ document.getElementById('message-ok').addEventListener('click',()=>{
   if(love) love.style.display='block';
 });
 
-/* ========== CONFESSION → TỰ ĐỘNG LƯU VÀO GOOGLE FORM ========== */
+/* ========== ANYTHING YOU WANNA SAID → TỰ ĐỘNG LƯU VÀO GOOGLE FORM ========== */
 const GOOGLE_FORM_ACTION   = 'https://docs.google.com/forms/d/e/1FAIpQLSeu2Zw6l-i577_tAHu-TxQBzC1d1qTESa9rQ7wlBHa6ESuAHQ/formResponse';
 const GOOGLE_FORM_ENTRY_ID = 'entry.2005620554';
 
@@ -1496,30 +1496,31 @@ document.getElementById('confession-go').addEventListener('click', async () => {
   const text   = input.value.trim();
 
   if (!text) {
-    status.textContent = '⚠️ Bạn chưa viết gì cả!';
+    status.textContent = '⚠️ you haven\'t written anything yet!';
     status.style.display = 'block';
     status.style.color = '#b3202f';
     return;
   }
 
-  status.textContent = '⏳ Đang gửi...';
+  status.textContent = '⏳ sending...';
   status.style.display = 'block';
   status.style.color = '#555';
 
-  const formData = new FormData();
-  formData.append(GOOGLE_FORM_ENTRY_ID, text);
+  const params = new URLSearchParams();
+  params.append(GOOGLE_FORM_ENTRY_ID, text);
 
   try {
     await fetch(GOOGLE_FORM_ACTION, {
       method: 'POST',
       mode: 'no-cors',
-      body: formData
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
     });
-    status.textContent = '✅ Đã gửi confession! Cảm ơn Shottie 💖';
+    status.textContent = '✅ sent! thank you shottie 💖';
     status.style.color = '#1b7f99';
     input.value = '';
   } catch (err) {
-    status.textContent = '❌ Có lỗi xảy ra, thử lại sau nhé!';
+    status.textContent = '❌ something went wrong, try again later!';
     status.style.color = '#b3202f';
   }
 });
