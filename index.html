@@ -1,3 +1,41 @@
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>LNGSHOT4SHO — home</title> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <li
+ĐÃ DÁN
+sửa bỏ phần town và beat lab đi còn lại giữ như cũ
+Mình kiểm tra xem file có trên máy chủ không để xóa chính xác hai phần này.
+Mình không thấy file trong máy chủ, và file dài hơn 1500 dòng nên viết lại cả file dễ sót lỗi. Bạn xóa theo 4 bước dưới đây, tất cả nằm trong thẻ <script> thứ hai (đoạn "4SHO FEATURES"). Phần còn lại giữ nguyên.
+1. Xóa CSS trong biến const css = \...``
+Xóa hai cụm:
+Từ #town-modal .album-modal-inner{max-width:1000px;...} đến hết #town-modal .pop-up{z-index:9;}.
+Từ #beat-modal .album-modal-inner{ đến hết khối @media (max-width:640px){ .bl-row{...} ... .bl-pulse{display:none;} }.
+Giữ dòng .btn[disabled]{...} ở đầu và mọi CSS từ .lb-inner{ trở xuống (cam, id, map, account).
+2. Xóa HTML trong insertAdjacentHTML
+Xóa đúng hai khối này:
+<div id="town-modal" class="album-modal" ...> đến thẻ </div> đóng của nó, ngay trước <div id="beat-modal".
+<div id="beat-modal" class="album-modal" ...> đến thẻ </div> đóng của nó, ngay trước dòng <!-- ===== 4SHO Cam ===== -->.
+3. Sửa đoạn thêm menu
+Đoạn "thêm mục vào menu" đổi thành:
+js
+(function(){
+  const nav = document.querySelector('nav.mainnav'); if(!nav) return;
+  const mk = (id, label) => { const a = document.createElement('a'); a.href = '#'; a.id = id; a.textContent = label; return a; };
+  [['camNavBtn','4sho cam'],['idNavBtn','4sho id'],['mapNavBtn','shotties world']].reverse()
+    .forEach(([id, l]) => nav.insertBefore(mk(id, l), nav.firstChild));
+})();
+Hai nút "town" và "beat lab" sẽ biến mất khỏi menu.
+4. Xóa hai khối JS
+Xóa từ /* ========== 4SHOVILLE TOWN ========== */ đến })(); cuối khối, ngay trước /* ========== 4SHO BEAT LAB ========== */.
+Xóa từ /* ========== 4SHO BEAT LAB ========== */ đến })(); cuối khối, ngay trước /* ========== 4SHO LAB ========== */.
+Sau khi xóa, các tính năng khác không bị ảnh hưởng vì chúng không dùng chung biến với hai khối này. Tùy chọn townUrl trong window.SHO = Object.assign({...}) giờ không còn tác dụng, bạn có thể xóa cho gọn.
+Các phần sau vẫn giữ nguyên, vì đây là nội dung của nhóm chứ không phải tính năng "town":
+Album 4SHOVILLE.
+Mục timeline "4SHOVILLE era".
+Banner "WELCOME TO 4SHOVILLE".
+Khung ảnh "4shoville" trong 4SHO Cam.
+Nếu bạn muốn mình xuất sẵn cả file đã sửa, hãy upload file .html lên. Mình sẽ xóa bằng script và gửi lại file hoàn chỉnh.
+m trục tiếp sửa đi để t coppy
+Đây là file đã xóa phần town và beat lab, còn lại giữ nguyên:
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1262,7 +1300,7 @@ document.getElementById('gameStage').addEventListener('touchstart',e=>{if(gameSt
 
 <script>
 /* ==========================================================================
-   4SHO FEATURES — 4SHO CAM, 4SHO ID, SHOTTIES WORLD, 4SHOVILLE, BEAT LAB,
+   4SHO FEATURES — 4SHO CAM, 4SHO ID, SHOTTIES WORLD,
    đăng nhập bằng email (bắt buộc khi vào web) + FAN VOTE 1 phiếu / email.
 
    CẤU HÌNH — dán link Apps Script (kết thúc bằng /exec) vào đây:
@@ -1270,73 +1308,13 @@ document.getElementById('gameStage').addEventListener('touchstart',e=>{if(gameSt
 window.SHO = Object.assign({
   authUrl: '',        // đăng nhập email + fan vote → file 4sho-accounts.gs (để '' thì KHÔNG bắt đăng nhập và vote chưa hoạt động)
   requireLogin: true, // true: bắt đăng nhập ngay khi vào web | false: chỉ bắt đăng nhập khi vote
-  mapUrl:  '',        // Shotties World dùng chung cho mọi fan (tùy chọn)
-  townUrl: ''         // 4SHOVILLE dùng chung cho mọi fan (tùy chọn)
+  mapUrl:  ''         // Shotties World dùng chung cho mọi fan (tùy chọn)
 }, window.SHO || {});
 
 
 /* ---------- chèn CSS + HTML của các tính năng ---------- */
 (function(){
   const css = `  .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:4px 4px 0 rgba(0,0,0,.4);}
-  #town-modal .album-modal-inner{max-width:1000px;background:var(--paper);}
-  .tv-head{padding:22px 26px 12px;}
-  .tv-head h2{font:900 clamp(30px,4.5vw,46px)/1 'Playfair Display',serif;color:var(--crimson);margin:10px 0 4px;}
-  .tv-head p{font-size:13px;color:#555;}
-  .tv-wrap{position:relative;border-top:3px solid var(--teal);border-bottom:3px solid var(--teal);background:#1f5a43;}
-  #tvCanvas{display:block;width:100%;aspect-ratio:3/2;image-rendering:crisp-edges;image-rendering:pixelated;cursor:pointer;touch-action:manipulation;}
-  .tv-tip{position:absolute;display:none;background:var(--ink);color:#fff;border:2px solid var(--teal);font:700 10px/1 'Archivo',sans-serif;padding:5px 8px;pointer-events:none;white-space:nowrap;z-index:5;transform:translate(-50%,-140%);}
-  .tv-welcome{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;background:rgba(11,11,12,.88);color:#fff;}
-  .tv-welcome h3{font:900 clamp(26px,5vw,40px)/1 'Playfair Display',serif;}
-  .tv-welcome p{font-size:13px;color:#d8f2f8;max-width:320px;line-height:1.5;}
-  .tv-welcome input{background:#fff;color:var(--ink);border:2px solid var(--teal);font:600 14px 'Archivo',sans-serif;padding:12px;width:min(260px,100%);text-align:center;}
-  .tv-panel{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:18px 26px 26px;}
-  @media (max-width:700px){.tv-panel{grid-template-columns:1fr;}}
-  .tv-stat{display:flex;flex-wrap:wrap;gap:6px 18px;font:800 13px/1.3 'Archivo',sans-serif;margin-bottom:14px;}
-  .tv-stat b{color:var(--crimson);font:900 20px/1 'Playfair Display',serif;margin-left:2px;}
-  .tv-stat .muted{flex-basis:100%;font-weight:600;font-size:12px;color:#666;}
-  .tv-actions{display:flex;flex-wrap:wrap;gap:10px;}
-  .tv-speech{background:#fff;border:2px solid var(--teal);box-shadow:5px 5px 0 rgba(0,0,0,.25);padding:14px;min-height:96px;font:600 14px/1.5 'Archivo',sans-serif;}
-  .tv-speech small{display:block;margin-top:8px;font-weight:700;font-size:11px;color:var(--crimson-3);}
-  #town-modal .pop-up{z-index:9;}
-  #beat-modal .album-modal-inner{
-    max-width:1000px;color:#fff;border-color:var(--cyan);overflow:hidden;
-    background:radial-gradient(circle at 12% 8%, rgba(111,216,240,.35) 0, transparent 50%),
-               radial-gradient(circle at 90% 90%, rgba(179,32,47,.45) 0, transparent 50%),
-               #101014;
-    box-shadow:12px 12px 0 rgba(0,0,0,.6), 0 0 60px rgba(111,216,240,.3);
-  }
-  .bl-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:24px 26px 8px;position:relative;}
-  .bl-head h2{font:900 clamp(30px,5vw,50px)/1 'Playfair Display',serif;margin:10px 0 6px;text-shadow:3px 3px 0 var(--crimson);}
-  .bl-head p{font-size:13px;color:#d8f2f8;max-width:420px;line-height:1.5;}
-  .bl-pulse{font:900 clamp(46px,9vw,92px)/.8 'Playfair Display',serif;color:var(--cyan);margin-right:44px;transition:transform .08s ease-out;user-select:none;text-shadow:3px 3px 0 var(--crimson);}
-  .bl-pulse.hit{transform:scale(1.14) rotate(-3deg);}
-  .bl-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:12px 26px;}
-  .bl-bar .btn{padding:10px 14px;font-size:11px;}
-  .bl-bar .btn.play{background:var(--crimson-3);color:#fff;border-color:#fff;min-width:96px;}
-  .bl-field{display:flex;align-items:center;gap:8px;font:800 11px/1 'Archivo',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
-  .bl-field input[type=range]{accent-color:var(--cyan);width:130px;}
-  .bl-field select{background:#fff;color:var(--ink);border:2px solid var(--teal);font:700 12px 'Archivo',sans-serif;padding:8px;}
-  .bl-field b{color:var(--cyan);font:900 18px/1 'Playfair Display',serif;min-width:36px;}
-  #blViz{display:block;width:calc(100% - 52px);height:64px;margin:0 26px;border:2px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35);}
-  .bl-grid{padding:16px 26px 6px;}
-  .bl-row{display:grid;grid-template-columns:104px repeat(16,minmax(0,1fr));gap:4px;align-items:center;margin-bottom:6px;}
-  .bl-label{display:flex;align-items:center;gap:6px;font:800 11px/1 'Archivo',sans-serif;letter-spacing:.4px;white-space:nowrap;}
-  .bl-label .e{font-size:16px;}
-  .bl-cell{aspect-ratio:1;min-height:0;min-width:0;padding:0;border:2px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);cursor:pointer;touch-action:manipulation;}
-  .bl-cell.g{background:rgba(255,255,255,.15);}
-  .bl-cell.on{background:var(--rc);border-color:#fff;box-shadow:0 0 10px var(--rc);}
-  .bl-cell.ph{border-color:var(--cyan);}
-  .bl-cell.on.ph{filter:brightness(1.6);}
-  .bl-foot{padding:6px 26px 24px;font-size:12px;color:#d8f2f8;line-height:1.6;min-height:46px;}
-  .bl-foot b{color:#fff;}
-  @media (max-width:640px){
-    .bl-row{grid-template-columns:26px repeat(16,minmax(0,1fr));gap:2px;}
-    .bl-label .n{display:none;}
-    .bl-cell{border-width:1px;}
-    .bl-grid,.bl-bar,.bl-head,.bl-foot{padding-left:14px;padding-right:14px;}
-    #blViz{width:calc(100% - 28px);margin:0 14px;}
-    .bl-pulse{display:none;}
-  }
   .lb-inner{
     max-width:920px !important;color:#fff;border-color:var(--cyan) !important;overflow:hidden;
     background:radial-gradient(circle at 12% 8%, rgba(111,216,240,.32) 0, transparent 50%),
@@ -1410,83 +1388,7 @@ window.SHO = Object.assign({
   .ac-why{padding:0 26px 6px;font-size:11px;color:#9fd9e8;line-height:1.5;}
 `;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-  document.body.insertAdjacentHTML('beforeend', `<div id="town-modal" class="album-modal" aria-hidden="true">
-  <div class="album-modal-inner">
-    <button class="album-close" id="town-close" aria-label="close">✕</button>
-    <div class="tv-head">
-      <span class="tag red">live town</span>
-      <h2>4SHOVILLE</h2>
-      <p>Your house, the boys and the pets. Check in every day to keep your streak.</p>
-    </div>
-
-    <div class="tv-wrap" id="tvWrap">
-      <canvas id="tvCanvas" width="240" height="160" aria-label="4SHOVILLE town map"></canvas>
-      <div class="tv-tip" id="tvTip"></div>
-      <div class="tv-welcome" id="tvWelcome" style="display:none">
-        <h3>Welcome to 4SHOVILLE</h3>
-        <p>Every Shottie gets a house. Pick the name it will carry on the map.</p>
-        <input id="tvName" type="text" maxlength="14" placeholder="your name (max 14)" aria-label="house name">
-        <button class="btn" id="tvBuild">build my house</button>
-      </div>
-    </div>
-
-    <div class="tv-panel">
-      <div>
-        <div class="tv-stat">
-          <span>★ <b id="tvStars">0</b></span>
-          <span>🔥 <b id="tvStreak">0</b> day streak</span>
-          <span class="muted" id="tvCount"></span>
-        </div>
-        <div class="tv-actions">
-          <button class="btn" id="tvClaim">collect today's ★</button>
-          <button class="btn alt" id="tvUpgrade" style="background:var(--crimson)">upgrade house</button>
-          <button class="btn" id="tvLamp">lamp</button>
-          <button class="btn" id="tvTree">tree</button>
-          <button class="btn" id="tvNeon">neon sign</button>
-        </div>
-      </div>
-      <div class="tv-speech" id="tvSpeech">Tap a member or a pet on the map to hear what they say today.</div>
-    </div>
-  </div>
-</div>
-
-<div id="beat-modal" class="album-modal" aria-hidden="true">
-  <div class="album-modal-inner">
-    <button class="album-close" id="beat-close" aria-label="close">✕</button>
-
-    <div class="bl-head">
-      <div>
-        <span class="tag red">beat lab</span>
-        <h2>4SHO BEAT LAB</h2>
-        <p>Tap the squares to build a beat, hit play, then send the link to a friend.</p>
-      </div>
-      <div class="bl-pulse" id="blPulse" aria-hidden="true">4SHO</div>
-    </div>
-
-    <div class="bl-bar">
-      <button class="btn play" id="blPlay">▶ play</button>
-      <label class="bl-field">tempo <input type="range" id="blBpm" min="70" max="170" value="140" aria-label="tempo"><b id="blBpmVal">140</b></label>
-      <label class="bl-field">key
-        <select id="blKey" aria-label="key">
-          <option value="0">A minor</option><option value="1">C minor</option><option value="2">D minor</option><option value="3">E minor</option>
-        </select>
-      </label>
-      <label class="bl-field">start from
-        <select id="blPreset" aria-label="preset">
-          <option value="">choose...</option><option value="trap">trap</option><option value="boombap">boom bap</option><option value="dance">dance</option>
-        </select>
-      </label>
-      <button class="btn" id="blRandom">random</button>
-      <button class="btn alt" id="blClear">clear</button>
-      <button class="btn" id="blShare" style="background:var(--cyan)">copy beat link</button>
-    </div>
-
-    <canvas id="blViz" width="600" height="64" aria-hidden="true"></canvas>
-    <div class="bl-grid" id="blGrid"></div>
-    <div class="bl-foot" id="blFoot">Press <b>play</b> to hear it. Drag across squares to paint a row.</div>
-  </div>
-</div>
-
+  document.body.insertAdjacentHTML('beforeend', `
 <!-- ===== 4SHO Cam ===== -->
 <div id="cam-modal" class="album-modal lb-backdrop" aria-hidden="true">
   <div class="album-modal-inner lb-inner">
@@ -1610,555 +1512,6 @@ window.SHO = Object.assign({
   const mk = (id, label) => { const a = document.createElement('a'); a.href = '#'; a.id = id; a.textContent = label; return a; };
   [['camNavBtn','4sho cam'],['idNavBtn','4sho id'],['mapNavBtn','shotties world']].reverse()
     .forEach(([id, l]) => nav.insertBefore(mk(id, l), nav.firstChild));
-  const contact = [...nav.querySelectorAll('a')].find(a => a.getAttribute('href') === '#footer');
-  [['townNavBtn','town'],['beatNavBtn','beat lab']].forEach(([id, l]) => nav.insertBefore(mk(id, l), contact || null));
-})();
-
-/* ========== 4SHOVILLE TOWN ========== */
-(function(){
-  // Dán link Apps Script (xem STEP 4) để mọi fan thấy nhà của nhau. Để '' thì thị trấn chỉ có nhà của bạn.
-  const TOWN_URL = SHO.townUrl || '';
-
-  const W = 240, H = 160, KEY = '4shoville_save_v1';
-  const $ = id => document.getElementById(id);
-  const modal = $('town-modal'), cv = $('tvCanvas'), ctx = cv.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
-
-  /* ---------- save ---------- */
-  const fresh = () => ({ id:'', name:'', stars:0, level:1, streak:0, last:'', decor:{} });
-  function load(){
-    try { return Object.assign(fresh(), JSON.parse(localStorage.getItem(KEY) || '{}')); }
-    catch(e){ return fresh(); }
-  }
-  function persist(){ try { localStorage.setItem(KEY, JSON.stringify(save)); } catch(e){} }
-  let save = load();
-
-  /* ---------- dates ---------- */
-  const dateKey = d => d.toLocaleDateString('en-CA');
-  const dayNum = () => Math.floor((Date.now() - new Date().getTimezoneOffset()*6e4) / 864e5);
-
-  /* ---------- world data ---------- */
-  const PLACES = [
-    { label:'pho shop', x:12,  y:14,  w:50, h:30, c:'#e8a33d', feetY:54  },
-    { label:'dance',    x:178, y:14,  w:50, h:30, c:'#6fd8f0', feetY:54  },
-    { label:'court',    x:12,  y:100, w:50, h:30, c:'#b3202f', feetY:144 },
-    { label:'studio',   x:178, y:100, w:50, h:30, c:'#d9eff5', feetY:144 }
-  ];
-  const MEMBERS = [
-    { name:'Ohyul',  body:'#b3202f', hair:'#0d0d0f', quotes:['Just do it. Then do it again.','Ran 5km already. Your turn.','Hydrate, Shotties. I am serious.','Anyone seen my guitar?','Salmon for dinner. Do not ask.'] },
-    { name:'Louis',  body:'#2ba6c3', hair:'#5a3a22', quotes:['Bonjour, Shotties!','Basketball first, homework second.','Work really hard today!','Do not tell Ryul I said hi.','Big Elephant Giant Baby reporting in.'] },
-    { name:'Ryul',   body:'#e8a33d', hair:'#0d0d0f', quotes:['Pho tonight, no debate.','I wrote a song in 30 minutes. Beat that.','Persist to the end, Shotties.','Minecraft after this.','Louis, stop looking at me like that.'] },
-    { name:'Woojin', body:'#d9eff5', hair:'#2a2a2d', quotes:['One more run of the choreo.','New beat loading... 87%.','Bank and Cloud say meow.','If you love it, give it everything.','Corn energy today.'] }
-  ];
-  const OWN = [84, 44];
-  const SLOTS = [[140,44],[84,98],[140,98],[76,20],[140,20],[76,128],[140,128],[60,44],[60,98],[160,44],[160,98]];
-  const ROOFS = ['#b3202f','#2ba6c3','#e8a33d','#7f1424','#1b7f99'];
-  const COSTS = { upgrade:[15,40,90], lamp:15, tree:25, neon:40 };
-  const speckles = Array.from({length:90}, (_,i) => [ (i*53)%W, (i*37)%H ]);
-
-  const pets = [
-    { n:'Hunter', kind:'cat', x:100, y:76, tx:100, ty:76, dir:1, next:0, c:'#e0a25a', line:'Meow. Hunter is Louis\'s cat.' },
-    { n:'Coco',   kind:'dog', x:150, y:76, tx:150, ty:76, dir:1, next:60, c:'#8a5a3a', line:'Woof! Coco is Ryul\'s dog.' }
-  ];
-
-  let neighbors = [], hits = [], frame = 0, raf = 0, ticker = 0;
-
-  /* ---------- drawing ---------- */
-  function drawGround(night){
-    ctx.fillStyle = '#2e7d5b'; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle = '#276b4e';
-    speckles.forEach(s => ctx.fillRect(s[0], s[1], 2, 1));
-    ctx.fillStyle = '#3a3a3f';
-    ctx.fillRect(0,68,W,16); ctx.fillRect(108,0,16,H);
-    ctx.fillStyle = '#d9eff5';
-    for(let x=0;x<W;x+=14){ if(x>96 && x<124) continue; ctx.fillRect(x,75,7,2); }
-    for(let y=0;y<H;y+=14){ if(y>62 && y<86) continue; ctx.fillRect(115,y,2,7); }
-  }
-  function drawPlace(p){
-    ctx.fillStyle='rgba(0,0,0,.25)'; ctx.fillRect(p.x+2,p.y+p.h-1,p.w,3);
-    ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,p.w,p.h);
-    ctx.fillStyle='rgba(0,0,0,.28)'; ctx.fillRect(p.x,p.y,p.w,7);
-    ctx.fillStyle='#0d0d0f'; ctx.fillRect(p.x+p.w/2-3,p.y+p.h-9,6,9);
-    ctx.fillStyle='#0d0d0f'; ctx.font='bold 7px Archivo, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
-    ctx.fillText(p.label,p.x+p.w/2,p.y+12);
-  }
-  function drawHouse(x,y,lv,roof,decor,night){
-    ctx.fillStyle='rgba(0,0,0,.25)'; ctx.fillRect(x+1,y+13,17,3);
-    ctx.fillStyle='#f5f1e8'; ctx.fillRect(x,y+5,16,9);
-    ctx.fillStyle=roof; ctx.fillRect(x-1,y+3,18,3); ctx.fillRect(x+2,y,12,3);
-    if(lv>=3){ ctx.fillStyle='#4f4f52'; ctx.fillRect(x+11,y-3,3,4); ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fillRect(x+12,y-6-(frame/20)%4,2,2); }
-    ctx.fillStyle='#5e0e1a'; ctx.fillRect(x+6,y+8,4,6);
-    ctx.fillStyle = night ? '#ffd76a' : '#6fd8f0'; ctx.fillRect(x+2,y+8,3,3);
-    if(lv>=2){ ctx.fillRect(x+11,y+8,3,3); ctx.fillStyle='#b3202f'; ctx.fillRect(x+10,y+12,5,2); }
-    if(lv>=4){
-      ctx.globalAlpha = .6 + .4*Math.sin(frame/12);
-      ctx.fillStyle='#6fd8f0'; ctx.font='bold 9px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-      ctx.fillText('★', x+8, y-3); ctx.globalAlpha = 1;
-    }
-    if(decor.lamp){ ctx.fillStyle='#4f4f52'; ctx.fillRect(x-5,y+6,1,8); ctx.fillStyle = night ? '#ffe08a' : '#d9d5ca'; ctx.fillRect(x-6,y+4,3,2); }
-    if(decor.tree){ ctx.fillStyle='#6b4a2b'; ctx.fillRect(x+19,y+9,2,5); ctx.fillStyle='#1f8a4c'; ctx.fillRect(x+16,y+3,8,7); ctx.fillStyle='#2aa85e'; ctx.fillRect(x+17,y+1,6,3); }
-    if(decor.neon){ ctx.fillStyle = frame%60<45 ? '#6fd8f0' : '#2b7f99'; ctx.fillRect(x+2,y+5,12,1); }
-  }
-  function drawName(text,x,y){
-    ctx.font='bold 7px Archivo, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
-    ctx.lineWidth=2; ctx.strokeStyle='#0d0d0f'; ctx.strokeText(text,x,y);
-    ctx.fillStyle='#fff'; ctx.fillText(text,x,y);
-  }
-  function drawVacant(x,y){
-    ctx.fillStyle='#4f4f52'; ctx.fillRect(x+7,y+6,1,8);
-    ctx.fillStyle='#f5f1e8'; ctx.fillRect(x+3,y+3,9,5);
-    ctx.fillStyle='#b3202f'; ctx.fillRect(x+5,y+5,5,1);
-  }
-  function drawNPC(m,x,y,i){
-    const bob = Math.sin(frame/10 + i) > 0 ? 0 : -1;
-    y += bob;
-    ctx.fillStyle='rgba(0,0,0,.3)'; ctx.fillRect(x-3,y,7,2);
-    ctx.fillStyle='#0d0d0f'; ctx.fillRect(x-3,y-3,2,3); ctx.fillRect(x+1,y-3,2,3);
-    ctx.fillStyle=m.body; ctx.fillRect(x-3,y-9,6,6);
-    ctx.fillStyle='#f2c9a0'; ctx.fillRect(x-2,y-13,4,4);
-    ctx.fillStyle=m.hair; ctx.fillRect(x-2,y-14,4,2);
-  }
-  function drawPet(p){
-    const d = p.dir;
-    ctx.fillStyle='rgba(0,0,0,.3)'; ctx.fillRect(p.x-4,p.y,9,1);
-    ctx.fillStyle=p.c;
-    if(p.kind==='cat'){
-      ctx.fillRect(p.x-3,p.y-3,6,3);
-      ctx.fillRect(d>0?p.x+2:p.x-4,p.y-5,3,3);
-      ctx.fillRect(d>0?p.x+2:p.x-4,p.y-6,1,1); ctx.fillRect(d>0?p.x+4:p.x-2,p.y-6,1,1);
-      ctx.fillRect(d>0?p.x-5:p.x+3,p.y-5,2,1);
-    } else {
-      ctx.fillRect(p.x-4,p.y-4,8,4);
-      ctx.fillRect(d>0?p.x+3:p.x-6,p.y-6,4,4);
-      ctx.fillStyle='#4a2f1d'; ctx.fillRect(d>0?p.x+3:p.x-6,p.y-6,1,3);
-      ctx.fillStyle=p.c; ctx.fillRect(d>0?p.x-6:p.x+4,p.y-6,2,2);
-    }
-  }
-  function movePet(p){
-    if(frame > p.next){
-      if(Math.random() < .5){ p.tx = 8 + Math.random()*(W-16); p.ty = 72 + Math.random()*8; }
-      else { p.tx = 111 + Math.random()*8; p.ty = 10 + Math.random()*(H-14); }
-      p.next = frame + 120 + Math.random()*180;
-    }
-    const dx = p.tx-p.x, dy = p.ty-p.y, d = Math.hypot(dx,dy);
-    if(d > .5){ p.x += dx/d*.35; p.y += dy/d*.35; p.dir = dx >= 0 ? 1 : -1; }
-  }
-
-  function memberSpot(i){
-    const pl = PLACES[(dayNum() + i) % 4];
-    return { x: pl.x + pl.w/2 + (i%2 ? 8 : -8), y: pl.feetY, place: pl.label };
-  }
-  function memberQuote(i){ return MEMBERS[i].quotes[(dayNum() + i*2) % 5]; }
-
-  function draw(){
-    const hr = new Date().getHours(), night = hr >= 18 || hr < 6;
-    hits = [];
-    drawGround(night);
-    PLACES.forEach(drawPlace);
-
-    neighbors.forEach((n,i) => {
-      const s = SLOTS[i]; if(!s) return;
-      drawHouse(s[0], s[1], n.level, ROOFS[i % ROOFS.length], {}, night);
-      drawName(n.name, s[0]+8, s[1]+17);
-      hits.push({ x:s[0]-2, y:s[1]-4, w:20, h:22, tip:n.name, say:`${n.name} lives here. House level ${n.level}.` });
-    });
-    for(let i = neighbors.length; i < SLOTS.length; i++) drawVacant(SLOTS[i][0], SLOTS[i][1]);
-
-    if(save.name){
-      drawHouse(OWN[0], OWN[1], save.level, '#b3202f', save.decor, night);
-      drawName(save.name, OWN[0]+8, OWN[1]+17);
-      hits.push({ x:OWN[0]-2, y:OWN[1]-4, w:20, h:22, tip:save.name + ' (you)', say:`This is your house, level ${save.level} of 4. ${save.level<4 ? 'Spend ★ to upgrade it.' : 'It is fully upgraded.'}` });
-    }
-
-    MEMBERS.forEach((m,i) => {
-      const s = memberSpot(i);
-      drawNPC(m, s.x, s.y, i);
-      hits.push({ x:s.x-4, y:s.y-15, w:8, h:17, tip:`${m.name} @ ${s.place}`, say:`${m.name} at the ${s.place}: "${memberQuote(i)}"`, small:'New spot and new line every day.' });
-    });
-    pets.forEach(p => {
-      movePet(p); drawPet(p);
-      hits.push({ x:p.x-5, y:p.y-8, w:10, h:9, tip:p.n, say:p.line });
-    });
-
-    if(night){ ctx.fillStyle='rgba(8,10,40,.32)'; ctx.fillRect(0,0,W,H); }
-  }
-  function loop(){ frame++; draw(); raf = requestAnimationFrame(loop); }
-
-  /* ---------- pointer ---------- */
-  function hitAt(e){
-    const r = cv.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
-    for(let i = hits.length-1; i >= 0; i--){
-      const h = hits[i];
-      if(x >= h.x && x <= h.x+h.w && y >= h.y && y <= h.y+h.h) return h;
-    }
-    return null;
-  }
-  const tip = $('tvTip');
-  cv.addEventListener('mousemove', e => {
-    const h = hitAt(e);
-    if(!h){ tip.style.display = 'none'; return; }
-    const r = $('tvWrap').getBoundingClientRect();
-    tip.textContent = h.tip;
-    tip.style.left = (e.clientX - r.left) + 'px';
-    tip.style.top = (e.clientY - r.top) + 'px';
-    tip.style.display = 'block';
-  });
-  cv.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
-  cv.addEventListener('click', e => { const h = hitAt(e); if(h) say(h.say, h.small); });
-
-  function say(text, small){
-    const box = $('tvSpeech');
-    box.textContent = text;
-    if(small){ const s = document.createElement('small'); s.textContent = small; box.appendChild(s); }
-  }
-  function floatText(text){
-    const el = document.createElement('div');
-    el.className = 'pop-up good'; el.textContent = text;
-    el.style.left = '46%'; el.style.top = '40%'; el.style.fontSize = '30px';
-    $('tvWrap').appendChild(el); setTimeout(() => el.remove(), 700);
-  }
-
-  /* ---------- game logic ---------- */
-  const claimedToday = () => save.last === dateKey(new Date());
-  function claim(){
-    if(!save.name || claimedToday()) return;
-    const y = new Date(); y.setDate(y.getDate() - 1);
-    save.streak = save.last === dateKey(y) ? save.streak + 1 : 1;
-    const gain = 5 + Math.min(save.streak, 7);
-    save.stars += gain; save.last = dateKey(new Date());
-    persist(); updateUI(); floatText('+' + gain + ' ★');
-    say(`Day ${save.streak} in 4SHOVILLE.`, save.streak >= 7 ? 'Max streak bonus reached.' : 'Come back tomorrow to keep your streak.');
-  }
-  function upgrade(){
-    const cost = COSTS.upgrade[save.level - 1];
-    if(!save.name || save.level >= 4 || save.stars < cost) return;
-    save.stars -= cost; save.level++;
-    persist(); syncUp(); updateUI(); floatText('LEVEL ' + save.level);
-    say(`Your house is now level ${save.level}.`);
-  }
-  function buyDecor(key){
-    if(!save.name || save.decor[key] || save.stars < COSTS[key]) return;
-    save.stars -= COSTS[key]; save.decor[key] = true;
-    persist(); updateUI(); say(`You added a ${key === 'neon' ? 'neon sign' : key} to your house.`);
-  }
-  function msToMidnight(){ const n = new Date(), m = new Date(n); m.setHours(24,0,0,0); return m - n; }
-  const pad = n => String(n).padStart(2,'0');
-
-  function updateUI(){
-    $('tvStars').textContent = save.stars;
-    $('tvStreak').textContent = save.streak;
-    $('tvCount').textContent = (neighbors.length + (save.name ? 1 : 0)) + ' Shotties live here' + (TOWN_URL ? '' : ' (offline town)');
-    const claim = $('tvClaim');
-    if(!save.name){ claim.disabled = true; claim.textContent = 'build a house first'; }
-    else if(claimedToday()){
-      const ms = msToMidnight(), h = Math.floor(ms/36e5), m = Math.floor(ms%36e5/6e4), s = Math.floor(ms%6e4/1e3);
-      claim.disabled = true; claim.textContent = `next ★ in ${pad(h)}:${pad(m)}:${pad(s)}`;
-    } else { claim.disabled = false; claim.textContent = "collect today's ★"; }
-
-    const up = $('tvUpgrade');
-    if(save.level >= 4){ up.disabled = true; up.textContent = 'house maxed'; }
-    else { const c = COSTS.upgrade[save.level-1]; up.textContent = `upgrade house (${c}★)`; up.disabled = !save.name || save.stars < c; }
-
-    [['tvLamp','lamp','lamp'],['tvTree','tree','tree'],['tvNeon','neon','neon sign']].forEach(([id,key,label]) => {
-      const b = $(id);
-      if(save.decor[key]){ b.textContent = '✓ ' + label; b.disabled = true; }
-      else { b.textContent = `${label} (${COSTS[key]}★)`; b.disabled = !save.name || save.stars < COSTS[key]; }
-    });
-  }
-
-  /* ---------- shared town (optional) ---------- */
-  function syncUp(){
-    if(!TOWN_URL || !save.name) return;
-    const p = new URLSearchParams({ id:save.id, name:save.name, level:save.level });
-    fetch(TOWN_URL, { method:'POST', mode:'no-cors', body:p }).catch(() => {});
-  }
-  async function loadNeighbors(){
-    if(!TOWN_URL) return;
-    try {
-      const res = await fetch(TOWN_URL + (TOWN_URL.includes('?') ? '&' : '?') + 'action=town');
-      const data = await res.json();
-      neighbors = (data.houses || [])
-        .filter(h => h.id !== save.id)
-        .map(h => ({ name:String(h.name).slice(0,14), level:Math.min(4, Math.max(1, Number(h.level) || 1)) }))
-        .slice(-SLOTS.length);
-      updateUI();
-    } catch(e){ console.error(e); }
-  }
-
-  /* ---------- welcome ---------- */
-  function build(){
-    const name = $('tvName').value.trim().slice(0,14);
-    if(!name){ $('tvName').focus(); return; }
-    save.name = name;
-    save.id = save.id || 'h' + Math.random().toString(36).slice(2,10);
-    persist(); syncUp();
-    $('tvWelcome').style.display = 'none';
-    updateUI(); say(`${name}'s house is built. Collect your first ★ below.`);
-  }
-
-  /* ---------- open / close ---------- */
-  function openTown(e){
-    if(e) e.preventDefault();
-    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-    $('tvWelcome').style.display = save.name ? 'none' : 'flex';
-    updateUI(); loadNeighbors();
-    clearInterval(ticker); ticker = setInterval(updateUI, 1000);
-    cancelAnimationFrame(raf); loop();
-  }
-  function closeTown(){
-    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
-    clearInterval(ticker); cancelAnimationFrame(raf);
-  }
-
-  ['townNavBtn','townHeroBtn','townTaskBtn'].forEach(id => { const b = $(id); if(b) b.addEventListener('click', openTown); });
-  $('town-close').addEventListener('click', closeTown);
-  modal.addEventListener('click', e => { if(e.target === modal) closeTown(); });
-  document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeTown(); });
-  $('tvClaim').addEventListener('click', claim);
-  $('tvUpgrade').addEventListener('click', upgrade);
-  $('tvLamp').addEventListener('click', () => buyDecor('lamp'));
-  $('tvTree').addEventListener('click', () => buyDecor('tree'));
-  $('tvNeon').addEventListener('click', () => buyDecor('neon'));
-  $('tvBuild').addEventListener('click', build);
-  $('tvName').addEventListener('keydown', e => { if(e.key === 'Enter') build(); });
-})();
-
-/* ========== 4SHO BEAT LAB ========== */
-(function(){
-  const $ = id => document.getElementById(id);
-  const STEPS = 16, SAVE_KEY = '4sho_beatlab_v1';
-
-  // file = tên file ad-lib đặt cạnh index.html (mp3, ngắn dưới 1 giây). Chưa có file thì dùng tiếng synth thay thế.
-  const ROWS = [
-    { k:'kick',  n:'KICK',      e:'🥁', c:'#b3202f' },
-    { k:'snare', n:'SNARE',     e:'👏', c:'#6fd8f0' },
-    { k:'hat',   n:'HI-HAT',    e:'✨', c:'#f5f1e8' },
-    { k:'bass',  n:'808',       e:'🔊', c:'#e8a33d' },
-    { k:'keys',  n:'KEYS',      e:'🎹', c:'#2ba6c3' },
-    { k:'lib1',  n:'SHOTTIES!', e:'🎤', c:'#ff6b80', file:'adlib-shotties.mp3' },
-    { k:'lib2',  n:'4SHO!',     e:'💿', c:'#ffd76a', file:'adlib-4sho.mp3' }
-  ];
-  const KEYS = [55, 65.41, 73.42, 82.41];          // A, C, D, E (gốc của bass)
-  const PENT = [0, 3, 5, 7, 10];                   // thang ngũ cung thứ
-  const p = s => Array.from({length:STEPS}, (_, i) => s[i] === 'x' ? 1 : 0);
-  const PRESETS = {
-    trap:    { bpm:140, key:0, rows:['x..x..x.....x...','....x.......x...','x.x.x.x.x.x.xxxx','x..x..x.....x...','x.....x.....x...','.............x..','..............x.'] },
-    boombap: { bpm:92,  key:2, rows:['x.....x..x......','....x.......x...','x.x.x.x.x.x.x.x.','x.....x..x......','x...x...x.......','..............x.','................'] },
-    dance:   { bpm:124, key:1, rows:['x...x...x...x...','....x.......x...','.x.x.x.x.x.x.x.x','.x...x...x...x..','x..x..x.x..x..x.','......x.......x.','..............xx'] }
-  };
-
-  let pat = ROWS.map(() => Array(STEPS).fill(0)), bpm = 140, key = 0;
-  const cells = [];
-
-  /* ---------- build grid ---------- */
-  const grid = $('blGrid');
-  ROWS.forEach((r, ri) => {
-    const row = document.createElement('div'); row.className = 'bl-row';
-    const lab = document.createElement('div'); lab.className = 'bl-label';
-    lab.innerHTML = '<span class="e"></span><span class="n"></span>';
-    lab.firstChild.textContent = r.e; lab.lastChild.textContent = r.n;
-    row.appendChild(lab); cells[ri] = [];
-    for(let i = 0; i < STEPS; i++){
-      const b = document.createElement('button');
-      b.className = 'bl-cell' + (i % 4 === 0 ? ' g' : '');
-      b.style.setProperty('--rc', r.c);
-      b.setAttribute('aria-label', r.n + ' step ' + (i+1));
-      b.dataset.r = ri; b.dataset.i = i;
-      row.appendChild(b); cells[ri][i] = b;
-    }
-    grid.appendChild(row);
-  });
-
-  function paint(){
-    pat.forEach((row, ri) => row.forEach((v, i) => cells[ri][i].classList.toggle('on', !!v)));
-    $('blBpm').value = bpm; $('blBpmVal').textContent = bpm; $('blKey').value = key;
-  }
-
-  /* ---------- drag to paint ---------- */
-  let dragging = false, dragVal = 1;
-  grid.addEventListener('pointerdown', e => {
-    const c = e.target.closest('.bl-cell'); if(!c) return;
-    e.preventDefault(); initAudio();
-    dragging = true; dragVal = pat[c.dataset.r][c.dataset.i] ? 0 : 1;
-    setCell(c);
-  });
-  grid.addEventListener('pointerover', e => { const c = e.target.closest('.bl-cell'); if(dragging && c) setCell(c); });
-  document.addEventListener('pointerup', () => { dragging = false; });
-  function setCell(c){
-    const r = +c.dataset.r, i = +c.dataset.i;
-    if(pat[r][i] === dragVal) return;
-    pat[r][i] = dragVal; c.classList.toggle('on', !!dragVal);
-    if(dragVal && !playing && ac) voice(r, ac.currentTime + .01, i);
-    store();
-  }
-
-  /* ---------- audio ---------- */
-  let ac, master, analyser, noiseBuf, libBuf = {};
-  function initAudio(){
-    if(ac){ if(ac.state === 'suspended') ac.resume(); return; }
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-    master = ac.createGain(); master.gain.value = .85;
-    const comp = ac.createDynamicsCompressor();
-    analyser = ac.createAnalyser(); analyser.fftSize = 64;
-    master.connect(comp); comp.connect(analyser); analyser.connect(ac.destination);
-    noiseBuf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
-    const d = noiseBuf.getChannelData(0); for(let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
-    ROWS.filter(r => r.file).forEach(r => {
-      fetch(r.file).then(res => { if(!res.ok) throw 0; return res.arrayBuffer(); })
-        .then(b => new Promise((ok, no) => ac.decodeAudioData(b, ok, no)))
-        .then(buf => { libBuf[r.k] = buf; })
-        .catch(() => {});
-    });
-  }
-  function env(g, t, peak, len){ g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(.001, t + len); }
-  function noise(t, len, hp, peak){
-    const s = ac.createBufferSource(); s.buffer = noiseBuf;
-    const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hp;
-    const g = ac.createGain(); env(g, t, peak, len);
-    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + len + .02);
-  }
-  function tone(type, t, f0, f1, len, peak, lp){
-    const o = ac.createOscillator(); o.type = type;
-    o.frequency.setValueAtTime(f0, t);
-    if(f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + len*.6);
-    const g = ac.createGain(); env(g, t, peak, len);
-    let out = o;
-    if(lp){ const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; o.connect(f); out = f; }
-    out.connect(g); g.connect(master); o.start(t); o.stop(t + len + .02);
-  }
-  function voice(ri, t, step){
-    const k = ROWS[ri].k, root = KEYS[key];
-    if(k === 'kick'){ tone('sine', t, 160, 45, .38, 1.0); }
-    else if(k === 'snare'){ noise(t, .2, 1500, .55); tone('triangle', t, 190, 120, .1, .35); }
-    else if(k === 'hat'){ noise(t, .05, 7500, .22); }
-    else if(k === 'bass'){ tone('sine', t, root*2, root*2, .5, .9); tone('triangle', t, root*4, root*4, .3, .18, 600); }
-    else if(k === 'keys'){
-      const n = PENT[(step*2 + Math.floor(step/4)) % 5], f = root*4*Math.pow(2, n/12);
-      tone('square', t, f, f, .24, .10, 1800); tone('sawtooth', t, f*1.005, f*1.005, .24, .06, 1400);
-    }
-    else if(libBuf[k]){
-      const s = ac.createBufferSource(); s.buffer = libBuf[k];
-      const g = ac.createGain(); g.gain.value = 1; s.connect(g); g.connect(master); s.start(t);
-    }
-    else if(k === 'lib1'){ tone('sawtooth', t, 420, 250, .22, .30, 1100); }
-    else { tone('square', t, 520, 520, .1, .22, 1500); tone('square', t + .1, 780, 700, .14, .22, 1500); }
-  }
-
-  /* ---------- scheduler ---------- */
-  let playing = false, step = 0, nextTime = 0, timer = 0, queue = [], raf = 0, lastCol = -1;
-  function schedule(){
-    while(nextTime < ac.currentTime + .12){
-      for(let r = 0; r < ROWS.length; r++) if(pat[r][step]) voice(r, nextTime, step);
-      queue.push({ step, t:nextTime, kick:pat[0][step] });
-      nextTime += 60 / bpm / 4; step = (step + 1) % STEPS;
-    }
-  }
-  function play(){
-    initAudio(); playing = true; step = 0; nextTime = ac.currentTime + .06; queue = [];
-    clearInterval(timer); timer = setInterval(schedule, 25);
-    $('blPlay').textContent = '■ stop';
-  }
-  function stop(){
-    playing = false; clearInterval(timer); queue = [];
-    $('blPlay').textContent = '▶ play';
-    setCol(-1);
-  }
-  function setCol(c){
-    if(lastCol >= 0) cells.forEach(row => row[lastCol].classList.remove('ph'));
-    if(c >= 0) cells.forEach(row => row[c].classList.add('ph'));
-    lastCol = c;
-  }
-
-  /* ---------- visuals ---------- */
-  const viz = $('blViz'), vctx = viz.getContext('2d'), pulse = $('blPulse');
-  function frame(){
-    raf = requestAnimationFrame(frame);
-    if(playing && ac){
-      while(queue.length && queue[0].t <= ac.currentTime){
-        const q = queue.shift(); setCol(q.step);
-        if(q.kick){ pulse.classList.add('hit'); setTimeout(() => pulse.classList.remove('hit'), 90); }
-      }
-    }
-    const w = viz.width, h = viz.height; vctx.clearRect(0, 0, w, h);
-    const n = 32, bw = w / n, data = new Uint8Array(32);
-    if(analyser) analyser.getByteFrequencyData(data);
-    for(let i = 0; i < n; i++){
-      const v = Math.max(3, data[i] / 255 * h);
-      vctx.fillStyle = i % 2 ? '#6fd8f0' : '#b3202f';
-      vctx.fillRect(i*bw + 2, h - v, bw - 4, v);
-    }
-  }
-
-  /* ---------- save / share ---------- */
-  function store(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify({ pat, bpm, key })); } catch(e){} }
-  function restore(){
-    try {
-      const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-      if(s && Array.isArray(s.pat) && s.pat.length === ROWS.length){ pat = s.pat; bpm = s.bpm || 140; key = s.key || 0; }
-    } catch(e){}
-  }
-  function encode(){
-    const hex = pat.map(r => r.reduce((a, v, i) => a | (v ? 1 << i : 0), 0).toString(16).padStart(4, '0')).join('');
-    return hex + '-' + bpm + '-' + key;
-  }
-  function decode(code){
-    const m = new RegExp('^([0-9a-f]{' + ROWS.length*4 + '})-(\\d{2,3})-([0-3])$').exec(code || ''); if(!m) return false;
-    pat = ROWS.map((_, r) => { const n = parseInt(m[1].slice(r*4, r*4 + 4), 16); return Array.from({length:STEPS}, (_, i) => (n >> i) & 1); });
-    bpm = Math.min(170, Math.max(70, +m[2])); key = +m[3]; return true;
-  }
-  function shareUrl(){ return location.origin + location.pathname + '#beat=' + encode(); }
-  function note(html){ $('blFoot').innerHTML = html; }
-
-  $('blShare').addEventListener('click', () => {
-    const url = shareUrl(); store();
-    const done = () => note('<b>Link copied.</b> Send it to a friend and they will hear your exact beat.');
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(() => window.prompt('Copy this link', url));
-    else window.prompt('Copy this link', url);
-  });
-
-  /* ---------- controls ---------- */
-  $('blPlay').addEventListener('click', () => playing ? stop() : play());
-  $('blBpm').addEventListener('input', e => { bpm = +e.target.value; $('blBpmVal').textContent = bpm; store(); });
-  $('blKey').addEventListener('change', e => { key = +e.target.value; store(); });
-  $('blClear').addEventListener('click', () => { pat = ROWS.map(() => Array(STEPS).fill(0)); paint(); store(); });
-  $('blRandom').addEventListener('click', () => {
-    const dens = [.3, .15, .6, .22, .25, .08, .08];
-    pat = ROWS.map((_, r) => Array.from({length:STEPS}, (_, i) => (r === 0 && i === 0) || Math.random() < dens[r] ? 1 : 0));
-    bpm = 90 + Math.floor(Math.random() * 60); key = Math.floor(Math.random() * 4);
-    paint(); store();
-  });
-  $('blPreset').addEventListener('change', e => {
-    const pr = PRESETS[e.target.value]; if(!pr) return;
-    pat = pr.rows.map(p); bpm = pr.bpm; key = pr.key; paint(); store(); e.target.value = '';
-  });
-
-  /* ---------- open / close ---------- */
-  const modal = $('beat-modal');
-  function openBeat(e){
-    if(e) e.preventDefault();
-    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
-    cancelAnimationFrame(raf); frame();
-  }
-  function closeBeat(){
-    stop(); modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true');
-    cancelAnimationFrame(raf);
-  }
-  ['beatNavBtn', 'beatHeroBtn', 'beatTaskBtn'].forEach(id => { const b = $(id); if(b) b.addEventListener('click', openBeat); });
-  $('beat-close').addEventListener('click', closeBeat);
-  modal.addEventListener('click', e => { if(e.target === modal) closeBeat(); });
-  document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeBeat(); });
-
-  /* ---------- start ---------- */
-  restore();
-  const shared = /#beat=([^&]+)/.exec(location.hash);
-  if(shared && decode(shared[1])){
-    paint(); openBeat();
-    note('<b>Someone sent you this beat.</b> Press play, then change anything to remix it.');
-  } else {
-    if(!pat.some(r => r.some(Boolean))){ const pr = PRESETS.trap; pat = pr.rows.map(p); bpm = pr.bpm; key = pr.key; }
-    paint();
-  }
 })();
 
 /* ========== 4SHO LAB ========== */
